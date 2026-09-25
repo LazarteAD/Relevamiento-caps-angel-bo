@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relevamiento — Municipalidad de Hurlingham</title>
+<style>
+  :root{
+    --primary:#0B4C8C;     /* TODO: reemplazar por el azul institucional exacto */
+    --primary-dark:#073A63; /* TODO: reemplazar por el acento del logo */
+    --accent:#F2A900;      /* TODO: reemplazar por el color de acento del logo */
+    --bg:#F5F7FA;
+    --card:#FFFFFF;
+    --text:#1B2430;
+    --muted:#6B7686;
+    --border:#DCE2EA;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  header{background:var(--primary);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:12px}
+  header .logo{width:40px;height:40px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary-dark)}
+  header h1{font-size:17px;margin:0;font-weight:600}
+  header p{margin:2px 0 0;font-size:12px;opacity:.85}
+  main{max-width:640px;margin:0 auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+  input,select,textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:7px;font-size:14px;font-family:inherit}
+  textarea{min-height:80px;resize:vertical}
+  .row{display:flex;gap:10px}
+  .row>div{flex:1}
+  button{cursor:pointer;border:none;border-radius:7px;font-size:14px;font-weight:600;padding:11px 16px}
+  .btn-primary{background:var(--primary);color:#fff;width:100%;margin-top:16px}
+  .btn-primary:active{background:var(--primary-dark)}
+  .btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+  .btn-geo{background:var(--bg);color:var(--text);border:1px solid var(--border);font-size:12px;padding:7px 10px;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:7px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:600}
+  .status{font-size:12px;margin-top:8px;padding:8px;border-radius:6px;display:none}
+  .status.ok{display:block;background:#E6F4EA;color:#1E7B34}
+  .status.err{display:block;background:#FCEAEA;color:#B3261E}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .toolbar h2{font-size:14px;margin:0}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MH</div>
+  <div>
+    <h1>Relevamiento de datos</h1>
+    <p>Municipalidad de Hurlingham</p>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <form id="form">
+      <label for="fecha">Fecha</label>
+      <input type="date" id="fecha" required>
+
+      <label for="relevador">Nombre del relevador</label>
+      <input type="text" id="relevador" required placeholder="Nombre y apellido">
+
+      <div class="row">
+        <div>
+          <label for="barrio">Barrio / zona</label>
+          <input type="text" id="barrio" required>
+        </div>
+        <div>
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" required>
+        </div>
+      </div>
+
+      <label for="tipo">Tipo de relevamiento</label>
+      <select id="tipo" required>
+        <option value="">Seleccionar...</option>
+        <option>Infraestructura</option>
+        <option>Espacio público</option>
+        <option>Social</option>
+        <option>Ambiental</option>
+        <option>Otro</option>
+      </select>
+
+      <label for="obs">Observaciones</label>
+      <textarea id="obs" placeholder="Detalle lo relevado"></textarea>
+
+      <label>Ubicación (opcional)</label>
+      <button type="button" class="btn-geo" id="geoBtn">📍 Usar mi ubicación actual</button>
+      <input type="hidden" id="lat">
+      <input type="hidden" id="lng">
+      <div id="geoLabel" style="font-size:12px;color:var(--muted);margin-top:4px"></div>
+
+      <button type="submit" class="btn-primary">Guardar dato</button>
+      <div class="status" id="status"></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <h2>Datos cargados en este dispositivo (<span id="count">0</span>)</h2>
+      <button class="btn-secondary" id="exportBtn">Exportar CSV</button>
+    </div>
+    <div id="tableWrap"><div class="empty">Todavía no cargaste ningún dato.</div></div>
+  </div>
+</main>
+
+<script>
+// ⚠️ Pegá acá la URL del Google Apps Script Web App (ver README.md / apps-script.gs)
+const SHEET_WEBHOOK_URL = "";
+
+const KEY = "relevamientos_hurlingham";
+const load = () => JSON.parse(localStorage.getItem(KEY) || "[]");
+const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+
+document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
+
+document.getElementById('geoBtn').addEventListener('click', () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    document.getElementById('lat').value = pos.coords.latitude;
+    document.getElementById('lng').value = pos.coords.longitude;
+    document.getElementById('geoLabel').textContent =
+      `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)}`;
+  }, () => { document.getElementById('geoLabel').textContent = "No se pudo obtener la ubicación."; });
+});
+
+function renderTable(){
+  const data = load();
+  document.getElementById('count').textContent = data.length;
+  const wrap = document.getElementById('tableWrap');
+  if(!data.length){ wrap.innerHTML = '<div class="empty">Todavía no cargaste ningún dato.</div>'; return; }
+  let html = '<table><tr><th>Fecha</th><th>Barrio</th><th>Dirección</th><th>Tipo</th></tr>';
+  data.slice().reverse().slice(0,20).forEach(d=>{
+    html += `<tr><td>${d.fecha}</td><td>${d.barrio}</td><td>${d.direccion}</td><td>${d.tipo}</td></tr>`;
+  });
+  html += '</table>';
+  wrap.innerHTML = html;
+}
+renderTable();
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const entry = {
+    fecha: fecha.value, relevador: relevador.value, barrio: barrio.value,
+    direccion: direccion.value, tipo: tipo.value, obs: obs.value,
+    lat: lat.value, lng: lng.value, timestamp: new Date().toISOString()
+  };
+  const data = load(); data.push(entry); save(data);
+  renderTable();
+
+  const statusEl = document.getElementById('status');
+  if (SHEET_WEBHOOK_URL) {
+    try {
+      await fetch(SHEET_WEBHOOK_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: {'Content-Type':'text/plain'}, body: JSON.stringify(entry)
+      });
+      statusEl.className = 'status ok'; statusEl.textContent = 'Guardado y enviado a la planilla ✔';
+    } catch(err){
+      statusEl.className = 'status err'; statusEl.textContent = 'Guardado local. No se pudo enviar a la planilla.';
+    }
+  } else {
+    statusEl.className = 'status ok'; statusEl.textContent = 'Guardado en este dispositivo. Configurá SHEET_WEBHOOK_URL para sincronizar con Sheets.';
+  }
+  e.target.reset();
+  document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
+});
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = load();
+  if(!data.length) return;
+  const headers = Object.keys(data[0]);
+  const rows = [headers.join(',')].concat(
+    data.map(d => headers.map(h => `"${String(d[h]??'').replace(/"/g,'""')}"`).join(','))
+  );
+  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'relevamiento_hurlingham.csv';
+  a.click();
+});
+</script>
+</body>
+</html>
