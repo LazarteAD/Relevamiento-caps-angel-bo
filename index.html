@@ -20,7 +20,7 @@
     background: var(--bg);
     color: var(--text);
     padding-bottom: 40px;
-    background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('https://www.gba.gob.ar/sites/default/files/noticias/2021/01/caps_angel_bo.jpg');
+    background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('img/caps-frente.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -117,6 +117,9 @@
   .kpi-val { font-size: 2rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
   .kpi-label { font-size: .78rem; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
 
+  .foto-card img { width: 100%; height: auto; border-radius: 10px; display: block; }
+  .foto-card p { font-size: .85rem; color: var(--muted); margin-top: 10px; text-align: center; }
+
   footer.credit {
     text-align: center; padding: 28px 18px; margin-top: 40px;
     background: rgba(20,83,45,.95); color: #fff; font-size: .85rem;
@@ -129,8 +132,8 @@
 
 <header>
   <div class="header-logos">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Escudo_hurlingham.gif/120px-Escudo_hurlingham.gif" alt="Hurlingham" referrerpolicy="no-referrer">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/250px-Logo_oficial_UNAHur.png" alt="UNAHUR" referrerpolicy="no-referrer">
+    <img src="img/hurlingham.jpg" alt="Hurlingham Municipio" onerror="this.style.display='none'">
+    <img src="img/unahur.png" alt="UNAHUR" onerror="this.style.display='none'">
   </div>
   <h1>🩺 Posta de Tamizaje</h1>
   <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
@@ -268,6 +271,10 @@
     <div class="card kpi"><div class="kpi-val" id="kpi-alertas" style="color:#b91c1c">0</div><div class="kpi-label">Alertas</div></div>
     <div class="card kpi"><div class="kpi-val" id="kpi-edad">—</div><div class="kpi-label">Edad prom.</div></div>
   </div>
+  <div class="card foto-card">
+    <img src="img/caps-adentro.jpg" alt="Actividades en el CAPS Dr. Ángel Bo" onerror="this.parentElement.style.display='none'">
+    <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
+  </div>
 </section>
 </main>
 
@@ -401,7 +408,7 @@ async function enviarDatos(tipo, payload) {
     const res = await fetch(CONFIG.WEB_APP_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ token: Unahur, tipo, payload })
+      body: JSON.stringify({ token: CONFIG.TOKEN, tipo, payload })
     });
 
     const json = await res.json();
