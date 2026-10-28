@@ -16,11 +16,12 @@
     --muted: #6b7280;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  
   body {
     background: var(--bg);
     color: var(--text);
     padding-bottom: 40px;
-    /* FONDO CON LA FOTO DE LA FACHADA DEL CAPS */
+    /* FONDO CON LA FOTO DE AFUERA DEL CAPS */
     background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('caps-frente.jpg');
     background-size: cover;
     background-position: center;
@@ -34,6 +35,7 @@
     background: linear-gradient(135deg, #14532d 0%, #7f1d1d 100%);
     z-index: -2;
   }
+  
   header {
     background: linear-gradient(135deg, rgba(20,83,45,.95), rgba(127,29,29,.95));
     color: #fff; padding: 20px; text-align: center;
@@ -41,21 +43,21 @@
     backdrop-filter: blur(4px);
   }
   .header-logos { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 8px; flex-wrap: wrap; }
-  /* LOGOS LOCALES DE GITHUB */
-  .header-logos img { height: 65px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.4)); background: #fff; border-radius: 10px; padding: 5px; }
+  
+  /* LOGOS DE HURLINGHAM Y UNAHUR */
+  .header-logos img { height: 65px; width: auto; object-fit: contain; background: #fff; border-radius: 8px; padding: 6px; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
   
   header h1 { font-size: 1.4rem; margin-bottom: 4px; }
   header p { font-size: .9rem; opacity: .9; }
-  .header-row { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .header-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
   
-  /* SEMÁFORO (LED) - CLICKABLE */
+  /* SEMÁFORO (LED) */
   .status-badge { 
     display: inline-flex; align-items: center; gap: 8px;
     font-size: .8rem; padding: 6px 14px; border-radius: 20px; 
-    background: rgba(0,0,0,.4); font-weight: 600; cursor: pointer;
-    transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(0,0,0,.3); font-weight: 600;
+    transition: all 0.3s ease;
   }
-  .status-badge:hover { background: rgba(0,0,0,.6); }
   .led {
     width: 12px; height: 12px; border-radius: 50%;
     background: #9ca3af; box-shadow: 0 0 0 transparent;
@@ -67,7 +69,7 @@
   
   @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-  .clock-badge { display: inline-block; font-size: .78rem; padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,.3); font-weight: 600; }
+  .clock-badge { display: inline-block; font-size: .78rem; padding: 4px 12px; border-radius: 12px; background: rgba(255,255,255,.3); font-weight: 600; }
   
   nav.tabs { display: flex; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.08); position: sticky; top: 0; z-index: 10; }
   nav.tabs button { flex: 1; padding: 16px 6px; font-size: .95rem; font-weight: 600; border: none; background: transparent; cursor: pointer; color: var(--muted); border-bottom: 4px solid transparent; transition: .2s; }
@@ -82,7 +84,7 @@
   @media(max-width: 800px) { .grid { grid-template-columns: 1fr; } }
   @media(max-width: 500px) { .grid-4 { grid-template-columns: 1fr; } }
   
-  .card { background: rgba(255,255,255,.96); backdrop-filter: blur(2px); border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,.15); margin-bottom: 16px; }
+  .card { background: rgba(255,255,255,.95); backdrop-filter: blur(2px); border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,.15); margin-bottom: 16px; }
   .card h2 { font-size: 1.05rem; margin-bottom: 14px; color: var(--primary); }
   .card h3 { font-size: .95rem; margin: 14px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
   
@@ -126,29 +128,32 @@
   .res-table th { background: #f0fdf4; padding: 10px; text-align: left; border-bottom: 2px solid var(--primary); }
   .res-table td { padding: 10px; border-bottom: 1px solid #f0f0f0; }
 
+  /* ESTILO PARA LA FOTO DE ADENTRO DEL CAPS */
+  .foto-caps { width: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-top: 10px; object-fit: cover; max-height: 250px; }
+
   footer.credit {
     text-align: center; padding: 28px 18px; margin-top: 40px;
     background: rgba(20,83,45,.95); color: #fff; font-size: .85rem;
     border-top: 4px solid var(--secondary);
   }
   footer.credit strong { color: #fde047; }
+  footer .unahur-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.1); padding: 8px 16px; border-radius: 20px; margin-bottom: 12px; font-size: .8rem; }
+  footer .unahur-badge img { height: 30px; background: #fff; border-radius: 4px; padding: 2px; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-logos">
-    <!-- LOGOS LOCALES -->
-    <img src="logo-municipio.png" alt="Municipio de Hurlingham">
-    <img src="logo-unahur.png" alt="UNAHUR">
+    <img src="hurlingham.png" alt="Hurlingham">
+    <img src="unahur.png" alt="UNAHUR">
   </div>
   <h1>🩺 Posta de Tamizaje</h1>
   <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
   <div class="header-row">
-    <!-- BOTÓN PARA PROBAR CONEXIÓN -->
-    <div id="status-badge" class="status-badge" onclick="testCloudConnection()" title="Tocá acá para probar la conexión a Google">
+    <div id="status-badge" class="status-badge">
       <div class="led"></div>
-      <span id="status-text">Probar conexión</span>
+      <span id="status-text">Esperando envío...</span>
     </div>
     <div id="live-clock" class="clock-badge">📅 —</div>
   </div>
@@ -200,10 +205,7 @@
     <div class="card">
       <h2>Registros Locales</h2>
       <div class="counter" id="hta-count">0</div>
-      <div class="counter-label">En este dispositivo (si no hay internet)</div>
-      <div style="background:#f0fdf4; padding:10px; border-radius:8px; font-size:0.8rem; margin-top:10px; color:#14532d;">
-        <strong>💡 Tip:</strong> Si la luz está en Rojo, tocá el botón de arriba para ver el error exacto.
-      </div>
+      <div class="counter-label">En este dispositivo</div>
     </div>
   </div>
   <div class="grid">
@@ -282,18 +284,28 @@
     <div class="card kpi"><div class="kpi-val" id="kpi-alertas" style="color:#b91c1c">0</div><div class="kpi-label">Alertas</div></div>
     <div class="card kpi"><div class="kpi-val" id="kpi-edad">—</div><div class="kpi-label">Edad prom.</div></div>
   </div>
+  <div class="card">
+    <h2>Nuestro Espacio de Salud</h2>
+    <!-- FOTO DE ADENTRO DEL CAPS -->
+    <img src="caps-interior.jpg" alt="Taller en el CAPS" class="foto-caps">
+    <p style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:10px;">Vecinos y equipo de salud participando en los talleres del CAPS Dr. Ángel Bo.</p>
+  </div>
 </section>
 </main>
 
 <footer class="credit">
-  <strong>UNAHUR</strong><br>
-  Desarrollado por <strong>alumnos de la Universidad Nacional de Hurlingham</strong><br>
+  <div class="unahur-badge">
+    <img src="unahur.png" alt="UNAHUR">
+    <strong>UNAHUR</strong>
+  </div>
+  <br>
+  Desarrollado por <strong>alumnos de la Universidad Nacional de Hurlingham (UNAHUR)</strong><br>
   <span style="opacity:.85; font-size:.8rem;">Materia <strong>Salud Comunitaria 5</strong></span>
 </footer>
 
 <script>
 const CONFIG = {
-  // ⚠️ PEGÁ ACÁ TU URL DE APPS SCRIPT QUE TERMINA EN /exec (ENTRE LAS COMILLAS)
+  // ⚠️ PEGÁ ACÁ TU URL DE APPS SCRIPT QUE TERMINA EN /exec
   WEB_APP_URL: "https://script.google.com/macros/s/AKfycbznkh5kZCuFhbkn5AMXMS1CVlbpiP9a3n2PbsAzcqCgma_N8NabkMArRLnWpiIc6OF2iw/exec" 
 };
 
@@ -303,92 +315,13 @@ let htaRecords = JSON.parse(localStorage.getItem(LS_HTA) || "[]");
 let dbRecords  = JSON.parse(localStorage.getItem(LS_DB)  || "[]");
 let chartHta = null;
 
-// 1. FUNCIÓN PARA PROBAR LA CONEXIÓN Y VER EL ERROR EXACTO
-async function testCloudConnection() {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
-    alert("⚠️ ERROR: No has pegado la URL de Google Apps Script en el código.");
-    return;
-  }
-
+function setStatus(state, msg) {
   const badge = document.getElementById("status-badge");
   const text = document.getElementById("status-text");
-  badge.className = "status-badge saving";
-  text.textContent = "Probando conexión...";
-
-  try {
-    // Intentamos leer los datos (GET)
-    const res = await fetch(CONFIG.WEB_APP_URL);
-    if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
-    
-    const data = await res.json();
-    if (data.error) throw new Error("El servidor devolvió un error: " + data.error);
-    
-    // Si llegamos acá, funcionó
-    badge.className = "status-badge cloud";
-    text.textContent = "¡Conectado a la Nube!";
-    
-    if (Array.isArray(data.hta)) htaRecords = data.hta;
-    if (Array.isArray(data.db)) dbRecords = data.db;
-    localStorage.setItem(LS_HTA, JSON.stringify(htaRecords));
-    localStorage.setItem(LS_DB, JSON.stringify(dbRecords));
-    
-    alert("✅ ¡ÉXITO! La página se conectó a Google correctamente.");
-    renderizarTodo();
-    
-  } catch (error) {
-    console.error("Error detallado:", error);
-    badge.className = "status-badge local";
-    text.textContent = "Error de conexión";
-    
-    alert("❌ FALLÓ LA CONEXIÓN A GOOGLE\n\nDetalle del error:\n" + error.message + "\n\nPosibles soluciones:\n1. Verificá que la URL termine en /exec y no tenga espacios.\n2. En Apps Script, asegurate de que 'Quién tiene acceso' sea 'Cualquier persona'.\n3. Revisá que no tengas un bloqueador de anuncios activo.");
-  }
+  badge.className = "status-badge " + state;
+  text.textContent = msg;
 }
 
-// 2. LÓGICA DE GUARDADO (Si falla, guarda local)
-async function enviarDatos(tipo, payload) {
-  const badge = document.getElementById("status-badge");
-  const text = document.getElementById("status-text");
-  
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
-    alert("Falta configurar la URL del Apps Script.");
-    return;
-  }
-  
-  badge.className = "status-badge saving";
-  text.textContent = "Guardando en la nube...";
-  
-  try {
-    const formData = new URLSearchParams();
-    formData.append("tipo", tipo);
-    formData.append("payload", JSON.stringify(payload));
-
-    const res = await fetch(CONFIG.WEB_APP_URL, { method: "POST", body: formData });
-    const data = await res.json();
-    
-    if (!data.ok) throw new Error(data.error || "Error desconocido");
-    
-    badge.className = "status-badge cloud";
-    text.textContent = "Guardado en la Nube";
-    
-    const resBox = document.getElementById(tipo + "-result");
-    resBox.className = "result show ok";
-    resBox.innerHTML = `☁️ Guardado en Google.<br>${payload.nombre}`;
-
-  } catch (err) {
-    console.error(err);
-    badge.className = "status-badge local";
-    text.textContent = "Sin conexión (Modo Local)";
-    
-    if (tipo === "hta") { htaRecords.push(payload); localStorage.setItem(LS_HTA, JSON.stringify(htaRecords)); }
-    else { dbRecords.push(payload); localStorage.setItem(LS_DB, JSON.stringify(dbRecords)); }
-    
-    const resBox = document.getElementById(tipo + "-result");
-    resBox.className = "result show danger";
-    resBox.innerHTML = `📱 Guardado local (falló internet).<br>${payload.nombre}`;
-  }
-}
-
-// Cambio de pestañas
 document.querySelectorAll(".tab").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
@@ -399,7 +332,6 @@ document.querySelectorAll(".tab").forEach(btn => {
   });
 });
 
-// Reloj
 function updateDates() {
   const fmt = new Date().toLocaleString('es-AR', { weekday:'long', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
   document.getElementById("hta-fecha-preview").textContent = fmt;
@@ -407,7 +339,6 @@ function updateDates() {
   document.getElementById("live-clock").textContent = "📅 " + new Date().toLocaleString('es-AR', { weekday:'short', hour:'2-digit', minute:'2-digit' });
 }
 
-// Formulario HTA
 document.getElementById("form-hta").addEventListener("submit", async e => {
   e.preventDefault();
   const btn = e.target.querySelector("button.submit");
@@ -443,7 +374,6 @@ document.getElementById("form-hta").addEventListener("submit", async e => {
   setTimeout(() => document.getElementById("hta-result").className = "result", 5000);
 });
 
-// Formulario DB
 document.getElementById("form-db").addEventListener("submit", async e => {
   e.preventDefault();
   const btn = e.target.querySelector("button.submit");
@@ -484,13 +414,55 @@ document.getElementById("form-db").addEventListener("submit", async e => {
   setTimeout(() => document.getElementById("db-result").className = "result", 5000);
 });
 
+async function enviarDatos(tipo, payload) {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
+    alert("Falta configurar la URL del Apps Script.");
+    return;
+  }
+  
+  setStatus("saving", "Guardando en la nube...");
+  
+  try {
+    const formData = new URLSearchParams();
+    formData.append("tipo", tipo);
+    formData.append("payload", JSON.stringify(payload));
+
+    await fetch(CONFIG.WEB_APP_URL, { 
+      method: "POST", 
+      mode: "no-cors", 
+      headers: { "Content-Type": "text/plain" },
+      body: formData 
+    });
+    
+    setStatus("cloud", "Conectado a la Nube");
+    
+    const resBox = document.getElementById(tipo + "-result");
+    resBox.className = "result show ok";
+    resBox.innerHTML = `☁️ Guardado en la nube.<br>${payload.nombre}`;
+
+  } catch (err) {
+    console.error(err);
+    setStatus("local", "Sin conexión (Modo Local)");
+    
+    if (tipo === "hta") { htaRecords.push(payload); localStorage.setItem(LS_HTA, JSON.stringify(htaRecords)); }
+    else { dbRecords.push(payload); localStorage.setItem(LS_DB, JSON.stringify(dbRecords)); }
+    
+    const resBox = document.getElementById(tipo + "-result");
+    resBox.className = "result show danger";
+    resBox.innerHTML = `📱 Guardado local (falló internet).<br>${payload.nombre}`;
+  }
+}
+
 function renderizarTodo() {
   document.getElementById("hta-count").textContent = htaRecords.length;
   document.getElementById("db-count").textContent = dbRecords.length;
+  
   document.getElementById("kpi-hta").textContent = htaRecords.length;
   document.getElementById("kpi-db").textContent = dbRecords.length;
+  
   const alertas = htaRecords.filter(r=>r.alerta==="Sí").length + dbRecords.filter(r=>r.alerta==="Sí").length;
   document.getElementById("kpi-alertas").textContent = alertas;
+  
   drawChartHta();
 }
 
@@ -498,16 +470,24 @@ function drawChartHta() {
   const ctx = document.getElementById('hta-chart');
   if (!ctx) return;
   if (chartHta) chartHta.destroy();
+  
   const normales = htaRecords.filter(r => r.alerta === "No").length;
   const altas = htaRecords.filter(r => r.alerta === "Sí").length;
+
   chartHta = new Chart(ctx, {
     type: 'bar',
-    data: { labels: ['Normal', 'Alerta'], datasets: [{ label: 'Casos', data: [normales, altas], backgroundColor: ['#14532d', '#b91c1c'] }] },
+    data: {
+      labels: ['Normal', 'Alerta'],
+      datasets: [{
+        label: 'Casos',
+        data: [normales, altas],
+        backgroundColor: ['#14532d', '#b91c1c']
+      }]
+    },
     options: { responsive: true, maintainAspectRatio: false }
   });
 }
 
-// Iniciar
 updateDates();
 setInterval(updateDates, 60000);
 renderizarTodo();
