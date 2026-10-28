@@ -16,13 +16,11 @@
     --muted: #6b7280;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  
   body {
     background: var(--bg);
     color: var(--text);
     padding-bottom: 40px;
-    /* FONDO CON LA FOTO DE AFUERA DEL CAPS */
-    background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('caps-frente.jpg');
+    background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('https://www.gba.gob.ar/sites/default/files/noticias/2021/01/caps_angel_bo.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -35,7 +33,6 @@
     background: linear-gradient(135deg, #14532d 0%, #7f1d1d 100%);
     z-index: -2;
   }
-  
   header {
     background: linear-gradient(135deg, rgba(20,83,45,.95), rgba(127,29,29,.95));
     color: #fff; padding: 20px; text-align: center;
@@ -44,8 +41,8 @@
   }
   .header-logos { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 8px; flex-wrap: wrap; }
   
-  /* LOGOS DE HURLINGHAM Y UNAHUR */
-  .header-logos img { height: 65px; width: auto; object-fit: contain; background: #fff; border-radius: 8px; padding: 6px; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+  /* ACÁ ESTÁ EL TRUCO: referrerpolicy="no-referrer" evita que Wikipedia bloquee la foto */
+  .header-logos img { height: 60px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.4)); background: rgba(255,255,255,0.9); border-radius: 8px; padding: 5px; }
   
   header h1 { font-size: 1.4rem; margin-bottom: 4px; }
   header p { font-size: .9rem; opacity: .9; }
@@ -104,8 +101,6 @@
   
   .counter { font-size: 2rem; font-weight: 700; color: var(--primary); text-align: center; }
   .counter-label { text-align: center; font-size: .85rem; color: var(--muted); margin-bottom: 12px; }
-  .alert-item { padding: 10px; border-left: 4px solid var(--danger); background: #fff5f5; border-radius: 6px; margin-bottom: 8px; font-size: .88rem; }
-  .alert-empty { color: var(--muted); font-size: .9rem; font-style: italic; padding: 8px 0; }
   .chart-wrap { position: relative; height: 300px; margin-top: 10px; }
   
   .auto-fecha-info { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 10px; margin-bottom: 14px; }
@@ -124,12 +119,6 @@
   .kpi { text-align: center; padding: 22px 10px; }
   .kpi-val { font-size: 2rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
   .kpi-label { font-size: .78rem; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
-  .res-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-  .res-table th { background: #f0fdf4; padding: 10px; text-align: left; border-bottom: 2px solid var(--primary); }
-  .res-table td { padding: 10px; border-bottom: 1px solid #f0f0f0; }
-
-  /* ESTILO PARA LA FOTO DE ADENTRO DEL CAPS */
-  .foto-caps { width: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-top: 10px; object-fit: cover; max-height: 250px; }
 
   footer.credit {
     text-align: center; padding: 28px 18px; margin-top: 40px;
@@ -137,16 +126,15 @@
     border-top: 4px solid var(--secondary);
   }
   footer.credit strong { color: #fde047; }
-  footer .unahur-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.1); padding: 8px 16px; border-radius: 20px; margin-bottom: 12px; font-size: .8rem; }
-  footer .unahur-badge img { height: 30px; background: #fff; border-radius: 4px; padding: 2px; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-logos">
-    <img src="hurlingham.png" alt="Hurlingham">
-    <img src="unahur.png" alt="UNAHUR">
+    <!-- Logos oficiales directos -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Escudo_hurlingham.gif/120px-Escudo_hurlingham.gif" alt="Hurlingham" referrerpolicy="no-referrer">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/250px-Logo_oficial_UNAHur.png" alt="UNAHUR" referrerpolicy="no-referrer">
   </div>
   <h1>🩺 Posta de Tamizaje</h1>
   <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
@@ -284,22 +272,12 @@
     <div class="card kpi"><div class="kpi-val" id="kpi-alertas" style="color:#b91c1c">0</div><div class="kpi-label">Alertas</div></div>
     <div class="card kpi"><div class="kpi-val" id="kpi-edad">—</div><div class="kpi-label">Edad prom.</div></div>
   </div>
-  <div class="card">
-    <h2>Nuestro Espacio de Salud</h2>
-    <!-- FOTO DE ADENTRO DEL CAPS -->
-    <img src="caps-interior.jpg" alt="Taller en el CAPS" class="foto-caps">
-    <p style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:10px;">Vecinos y equipo de salud participando en los talleres del CAPS Dr. Ángel Bo.</p>
-  </div>
 </section>
 </main>
 
 <footer class="credit">
-  <div class="unahur-badge">
-    <img src="unahur.png" alt="UNAHUR">
-    <strong>UNAHUR</strong>
-  </div>
-  <br>
-  Desarrollado por <strong>alumnos de la Universidad Nacional de Hurlingham (UNAHUR)</strong><br>
+  <strong>UNAHUR</strong><br>
+  Desarrollado por <strong>alumnos de la Universidad Nacional de Hurlingham</strong><br>
   <span style="opacity:.85; font-size:.8rem;">Materia <strong>Salud Comunitaria 5</strong></span>
 </footer>
 
