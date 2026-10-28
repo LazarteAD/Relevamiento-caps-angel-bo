@@ -340,8 +340,8 @@
 
 <script>
 const CONFIG = {
-  // ⚠️ PEGÁ ACÁ TU URL DE APPS SCRIPT QUE TERMINA EN /exec (ENTRE LAS COMILLAS)
-  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev" 
+  // URL de Google Apps Script /exec configurada correctamente
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbznkh5kZCuFhbkn5AMXMS1CVlbpiP9a3n2PbsAzcqCgma_N8NabkMArRLnWpiIc6OF2iw/exec" 
 };
 
 const LS_HTA = "caps_hta_records";
@@ -363,7 +363,7 @@ function setStatus(state) {
 
 // --- VERIFICAR CONEXIÓN ---
 async function checkConnection() {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev") {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
     setStatus("local");
     return;
   }
@@ -428,7 +428,7 @@ function clasificarIMC(imc) {
 
 // --- ENVIAR A LA NUBE ---
 async function enviar(tipo, payload) {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev") {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
     alert("Falta configurar la URL del Apps Script en el código.");
     return { ok: false, local: true };
   }
