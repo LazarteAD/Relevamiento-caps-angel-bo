@@ -46,7 +46,7 @@
   header p { font-size: .9rem; opacity: .9; }
   .header-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
   
-  /* ESTILOS DEL SEMÁFORO (LED) */
+  /* SEMÁFORO (LED) */
   .status-badge { 
     display: inline-flex; align-items: center; gap: 8px;
     font-size: .8rem; padding: 6px 14px; border-radius: 20px; 
@@ -157,12 +157,11 @@
 <header>
   <div class="header-logos">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Escudo_hurlingham.gif/120px-Escudo_hurlingham.gif" alt="Escudo de Hurlingham" onerror="this.style.display='none';">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/250px-Logo_oficial_UNAHur.png" alt="UNAHUR" onerror="this.style.display='none';">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Logo_UNAHUR.png/320px-Logo_UNAHUR.png" alt="UNAHUR" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/250px-Logo_oficial_UNAHur.png';">
   </div>
   <h1>🩺 Posta de Tamizaje</h1>
   <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
   <div class="header-row">
-    <!-- NUEVO INDICADOR LED -->
     <div id="status-badge" class="status-badge local">
       <div class="led"></div>
       <span id="status-text">Modo local (sin conectar)</span>
@@ -331,7 +330,7 @@
 
 <footer class="credit">
   <div class="unahur-badge">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/80px-Logo_oficial_UNAHur.png" alt="UNAHUR">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Logo_UNAHUR.png/80px-Logo_UNAHUR.png" alt="UNAHUR" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/80px-Logo_oficial_UNAHur.png';">
     <strong>UNAHUR</strong>
   </div>
   <br>
@@ -341,8 +340,8 @@
 
 <script>
 const CONFIG = {
-  // ⚠️ PEGÁ ACÁ TU URL DE APPS SCRIPT QUE TERMINA EN /exec
-  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbznkh5kZCuFhbkn5AMXMS1CVlbpiP9a3n2PbsAzcqCgma_N8NabkMArRLnWpiIc6OF2iw/exec" 
+  // ⚠️ PEGÁ ACÁ TU URL DE APPS SCRIPT QUE TERMINA EN /exec (ENTRE LAS COMILLAS)
+  WEB_APP_URL: "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev" 
 };
 
 const LS_HTA = "caps_hta_records";
@@ -352,21 +351,19 @@ let dbRecords  = JSON.parse(localStorage.getItem(LS_DB)  || "[]");
 let charts = {};
 let currentPeriod = "mes";
 
-// --- CONTROL DEL SEMÁFORO ---
+// --- SEMÁFORO ---
 function setStatus(state) {
   const badge = document.getElementById("status-badge");
   const text = document.getElementById("status-text");
-  
   badge.className = "status-badge " + state;
-  
   if (state === "cloud") text.textContent = "Guardando en la Nube";
   else if (state === "saving") text.textContent = "Guardando...";
   else text.textContent = "Modo Local (Sin Conexión)";
 }
 
-// --- VERIFICAR CONEXIÓN CON EL SERVIDOR ---
+// --- VERIFICAR CONEXIÓN ---
 async function checkConnection() {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev") {
     setStatus("local");
     return;
   }
@@ -375,9 +372,8 @@ async function checkConnection() {
     const res = await fetch(CONFIG.WEB_APP_URL);
     const data = await res.json();
     if (data.error) throw new Error("Error del servidor");
-    
     setStatus("cloud");
-    // Si responde bien, actualizamos los datos locales con los de la nube
+    
     if (Array.isArray(data.hta)) htaRecords = data.hta;
     if (Array.isArray(data.db)) dbRecords = data.db;
     localStorage.setItem(LS_HTA, JSON.stringify(htaRecords));
@@ -389,6 +385,17 @@ async function checkConnection() {
   }
 }
 
+// --- INTERFAZ (PESTAÑAS Y RELOJ) ---
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+    renderCharts(btn.dataset.tab);
+  });
+});
+
 function updateFechaPreview() {
   const fmt = new Date().toLocaleString('es-AR', { weekday:'long', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
   document.querySelectorAll('.auto-fecha-value').forEach(el => el.textContent = fmt.charAt(0).toUpperCase() + fmt.slice(1));
@@ -399,6 +406,7 @@ function updateLiveClock() {
 }
 setInterval(() => { updateFechaPreview(); updateLiveClock(); }, 30000);
 
+// --- HELPERS ---
 function cleanName(name) {
   return String(name || '').trim().replace(/\s+/g, ' ').split(' ').map(w => w.length ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '').join(' ').trim();
 }
@@ -418,14 +426,14 @@ function clasificarIMC(imc) {
   return "Obesidad II/III";
 }
 
-// --- ENVIAR DATOS (ACTUALIZA EL SEMÁFORO) ---
+// --- ENVIAR A LA NUBE ---
 async function enviar(tipo, payload) {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "PEGA_TU_URL_AQUI") {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL === "https://script.google.com/macros/s/AKfycbw9f5Ed1O4d1dnWLd2gU2fljS8TogKNzfhtg9KSKtUY/dev") {
     alert("Falta configurar la URL del Apps Script en el código.");
     return { ok: false, local: true };
   }
   
-  setStatus("saving"); // Se pone amarillo
+  setStatus("saving");
   
   try {
     const formData = new URLSearchParams();
@@ -440,20 +448,19 @@ async function enviar(tipo, payload) {
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || "Error al guardar");
     
-    setStatus("cloud"); // Se pone verde
+    setStatus("cloud");
     return { ok: true };
     
   } catch (err) {
     console.error("Error fetch:", err);
-    setStatus("local"); // Se pone rojo porque falló y se guardó local
-    
+    setStatus("local");
     if (tipo === "hta") { htaRecords.push(payload); localStorage.setItem(LS_HTA, JSON.stringify(htaRecords)); }
     else { dbRecords.push(payload); localStorage.setItem(LS_DB, JSON.stringify(dbRecords)); }
-    
     return { ok: false, local: true };
   }
 }
 
+// --- FORMULARIOS ---
 document.getElementById("form-hta").addEventListener("submit", async e => {
   e.preventDefault();
   const btn = e.target.querySelector("button.submit");
@@ -545,16 +552,71 @@ document.getElementById("form-db").addEventListener("submit", async e => {
   setTimeout(() => resBox.className = "result", 6000);
 });
 
+// --- GRÁFICOS Y RENDERIZADO ---
 function render() {
   document.getElementById("hta-count").textContent = htaRecords.length;
   document.getElementById("db-count").textContent = dbRecords.length;
-  // Los gráficos quedan simplificados para esta prueba
+  renderCharts(document.querySelector(".tab.active").dataset.tab);
+}
+
+function renderCharts(tab) {
+  if (tab === "hta") {
+    const clasifs = ["Normal", "Presión elevada", "HTA Grado 1", "HTA Grado 2", "Crisis hipertensiva", "Hipotensión"];
+    if (charts.htaClasif) charts.htaClasif.destroy();
+    const ctx = document.getElementById("hta-chart-clasif");
+    if(ctx) {
+      charts.htaClasif = new Chart(ctx, { 
+        type:"bar", 
+        data:{ labels: clasifs, datasets: [ { label:"Casos", data: clasifs.map(c => htaRecords.filter(r => r.clasificacion===c).length), backgroundColor:"#14532d" } ] }, 
+        options:{ responsive:true, maintainAspectRatio:false } 
+      });
+    }
+  }
+  if (tab === "db") {
+    const riesgos = ["Bajo", "Ligeramente elevado", "Moderado", "Alto", "Muy alto"];
+    if (charts.dbDonut) charts.dbDonut.destroy();
+    const ctx = document.getElementById("db-chart-donut");
+    if(ctx) {
+      charts.dbDonut = new Chart(ctx, { 
+        type:"doughnut", 
+        data:{ labels: riesgos, datasets: [ { data: riesgos.map(x => dbRecords.filter(r => r.riesgo===x).length), backgroundColor: ["#15803d", "#22c55e", "#f59e0b", "#ea580c", "#b91c1c"] } ] }, 
+        options:{ responsive:true, maintainAspectRatio:false } 
+      });
+    }
+  }
+  if (tab === "resumen") {
+    document.getElementById("kpi-hta").textContent = htaRecords.length;
+    document.getElementById("kpi-db").textContent = dbRecords.length;
+    document.getElementById("kpi-alertas").textContent = htaRecords.filter(r=>r.alerta==="Sí").length + dbRecords.filter(r=>r.alerta==="Sí").length;
+  }
+}
+
+// --- EXPORTAR CSV ---
+function downloadCSV(rows, filename) {
+  const csv = rows.map(r => r.join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function exportSummaryCSV() {
+  const rows = [["Tipo", "Total", "Alertas"]];
+  rows.push(["Hipertensión", htaRecords.length, htaRecords.filter(r=>r.alerta==="Sí").length]);
+  rows.push(["Diabetes", dbRecords.length, dbRecords.filter(r=>r.alerta==="Sí").length]);
+  downloadCSV(rows, `Resumen_${new Date().toISOString().slice(0,10)}.csv`);
+}
+function exportRawCSV() {
+  const rows = [["Tipo", "Fecha", "Nombre", "Edad", "Sexo", "Alerta"]];
+  htaRecords.forEach(r => rows.push(["HTA", r.fecha, r.nombre, r.edad, r.sexo, r.alerta]));
+  dbRecords.forEach(r => rows.push(["DB", r.fecha, r.nombre, r.edad, r.sexo, r.alerta]));
+  downloadCSV(rows, `Registros_${new Date().toISOString().slice(0,10)}.csv`);
 }
 
 // Inicializar
 updateFechaPreview(); 
 updateLiveClock(); 
-checkConnection(); // Verifica la conexión ni bien abre la página
+checkConnection();
 render();
 </script>
 </body>
