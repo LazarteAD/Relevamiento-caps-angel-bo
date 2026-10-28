@@ -2,267 +2,851 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Registro ROU — CCSC · CAPS Ángel Bo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Posta de Tamizaje — CAPS Dr. Ángel Bo | UNAHUR</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-  :root{
-    --primary:#0B4C8C;      /* TODO: reemplazar por el azul institucional exacto */
-    --primary-dark:#073A63; /* TODO: reemplazar por el acento del logo */
-    --accent:#F2A900;       /* TODO: reemplazar por el color de acento del logo */
-    --bg:#F5F7FA;
-    --card:#FFFFFF;
-    --text:#1B2430;
-    --muted:#6B7686;
-    --border:#DCE2EA;
-    --danger:#B3261E;
-    --ok:#1E7B34;
+  :root {
+    --primary: #14532d;       /* Verde institucional Hurlingham */
+    --primary-light: #166534;
+    --secondary: #7f1d1d;     /* Rojo institucional Hurlingham */
+    --accent: #f59e0b;
+    --danger: #b91c1c;
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{background:var(--primary);color:#fff;padding:18px 20px;display:flex;align-items:center;gap:12px}
-  header .logo{width:40px;height:40px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary-dark)}
-  header h1{font-size:16px;margin:0;font-weight:600}
-  header p{margin:2px 0 0;font-size:12px;opacity:.85}
-  main{max-width:640px;margin:0 auto;padding:16px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
-  .card h2{font-size:14px;margin:0 0 4px;color:var(--primary)}
-  .card .hint{font-size:12px;color:var(--muted);margin:0 0 10px}
-  label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
-  label small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
-  input,select,textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:7px;font-size:14px;font-family:inherit}
-  textarea{min-height:60px;resize:vertical}
-  .row{display:flex;gap:10px}
-  .row>div{flex:1}
-  button{cursor:pointer;border:none;border-radius:7px;font-size:14px;font-weight:600;padding:11px 16px}
-  .btn-primary{background:var(--primary);color:#fff;width:100%;margin-top:16px}
-  .btn-primary:active{background:var(--primary-dark)}
-  .btn-secondary{background:#fff;color:var(--primary);border:1px solid var(--primary)}
-  .result{margin-top:10px;padding:10px;border-radius:7px;font-size:13px;font-weight:600;display:none}
-  .result.normal{display:block;background:#E6F4EA;color:var(--ok)}
-  .result.alterada{display:block;background:#FCEAEA;color:var(--danger)}
-  table{width:100%;border-collapse:collapse;font-size:11px}
-  th,td{text-align:left;padding:6px;border-bottom:1px solid var(--border)}
-  th{color:var(--muted);font-weight:600}
-  .status{font-size:12px;margin-top:8px;padding:8px;border-radius:6px;display:none}
-  .status.ok{display:block;background:#E6F4EA;color:var(--ok)}
-  .status.err{display:block;background:#FCEAEA;color:var(--danger)}
-  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .toolbar h2{font-size:14px;margin:0}
-  .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
-  .tablewrap{overflow-x:auto}
-  .badge-alt{color:var(--danger);font-weight:700}
-  .opt-btn{width:100%;background:#fff;color:var(--text);border:1px solid var(--border);font-weight:600;padding:10px}
-  .opt-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 40px;
+    /* Fondo ilustrado con la foto del CAPS + capa de color para mantener legibilidad */
+    background-image: linear-gradient(rgba(20,83,45,.85), rgba(127,29,29,.75)), url('https://www.gba.gob.ar/sites/default/files/noticias/2021/01/caps_angel_bo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+  /* Fallback si la imagen no carga: gradiente institucional */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #14532d 0%, #7f1d1d 100%);
+    z-index: -2;
+  }
+  header {
+    background: linear-gradient(135deg, rgba(20,83,45,.95), rgba(127,29,29,.95));
+    color: #fff; padding: 20px; text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    backdrop-filter: blur(4px);
+  }
+  .header-logos { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 8px; flex-wrap: wrap; }
+  .header-logos img { height: 60px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.4)); }
+  header h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  header p { font-size: .9rem; opacity: .9; }
+  .header-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .sync-badge { display: inline-block; font-size: .75rem; padding: 4px 10px; border-radius: 12px; background: rgba(255,255,255,.2); }
+  .clock-badge { display: inline-block; font-size: .78rem; padding: 4px 12px; border-radius: 12px; background: rgba(255,255,255,.3); font-weight: 600; }
+  nav.tabs { display: flex; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.08); position: sticky; top: 0; z-index: 10; }
+  nav.tabs button { flex: 1; padding: 16px 6px; font-size: .95rem; font-weight: 600; border: none; background: transparent; cursor: pointer; color: var(--muted); border-bottom: 4px solid transparent; transition: .2s; }
+  nav.tabs button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0fdf4; }
+  main { max-width: 1100px; margin: 0 auto; padding: 18px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  @media(max-width: 900px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
+  @media(max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  @media(max-width: 500px) { .grid-4 { grid-template-columns: 1fr; } }
+  .card { background: rgba(255,255,255,.95); backdrop-filter: blur(2px); border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,.15); margin-bottom: 16px; }
+  .card h2 { font-size: 1.05rem; margin-bottom: 14px; color: var(--primary); }
+  .card h3 { font-size: .95rem; margin: 14px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; color: #374151; }
+  input, select { width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px; background: #fff; }
+  input:focus, select:focus { outline: none; border-color: var(--primary); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  button.submit { width: 100%; padding: 16px; font-size: 1.05rem; font-weight: 700; background: var(--primary); color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: .2s; margin-top: 8px; }
+  button.submit:hover { background: #0f3d1f; }
+  button.submit:disabled { background: #9ca3af; cursor: not-allowed; }
+  .result { margin-top: 14px; padding: 14px; border-radius: 10px; font-weight: 700; text-align: center; font-size: 1.05rem; display: none; }
+  .result.show { display: block; }
+  .result.ok { background: #d1e7dd; color: #0f5132; }
+  .result.warn { background: #fff3cd; color: #664d03; }
+  .result.danger { background: #f8d7da; color: #842029; }
+  .counter { font-size: 2rem; font-weight: 700; color: var(--primary); text-align: center; }
+  .counter-label { text-align: center; font-size: .85rem; color: var(--muted); margin-bottom: 12px; }
+  .alert-item { padding: 10px; border-left: 4px solid var(--danger); background: #fff5f5; border-radius: 6px; margin-bottom: 8px; font-size: .88rem; }
+  .alert-item strong { color: var(--danger); }
+  .alert-item .wa-btn { display: inline-block; margin-top: 6px; padding: 6px 10px; background: #25d366; color: #fff; text-decoration: none; border-radius: 6px; font-size: .8rem; font-weight: 600; }
+  .alert-empty { color: var(--muted); font-size: .9rem; font-style: italic; padding: 8px 0; }
+  .chart-wrap { position: relative; height: 300px; margin-top: 10px; }
+  .disclaimer { font-size: .75rem; color: var(--muted); margin-top: 10px; text-align: center; }
+  .btn-refresh { background: #e9ecef; color: #495057; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: .85rem; margin-top: 8px; }
+  .field-help { font-size: .72rem; color: var(--muted); margin-top: -8px; margin-bottom: 10px; }
+  .pregunta { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .pregunta:last-child { border-bottom: none; }
+  .pregunta .label-q { font-size: .88rem; font-weight: 600; margin-bottom: 6px; display: block; color: #374151; }
+  .opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .opts label { flex: 1; min-width: 70px; padding: 10px; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center; cursor: pointer; font-size: .85rem; font-weight: 500; margin: 0; }
+  .opts input[type=radio] { display: none; }
+  .opts label:has(input:checked) { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .auto-fecha-info { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 10px; margin-bottom: 14px; }
+  .auto-fecha-icon { font-size: 1.6rem; }
+  .auto-fecha-label { font-size: .75rem; color: #495057; font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+  .auto-fecha-value { font-size: 1rem; font-weight: 700; color: var(--primary); margin-top: 3px; }
+  .period-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .period-btn { padding: 10px 16px; border: 2px solid #e5e7eb; background: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; transition: .2s; color: #374151; }
+  .period-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .period-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .period-info { font-size: .82rem; color: var(--muted); font-style: italic; margin: 0; }
+  .filter-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; padding: 12px; background: #f9fafb; border-radius: 8px; }
+  .filter-row label { font-size: .85rem; font-weight: 600; margin: 0; white-space: nowrap; color: #374151; }
+  .filter-row select { flex: 1; min-width: 160px; max-width: 220px; margin: 0; padding: 9px 12px; font-size: .9rem; }
+  .filter-row.disabled { opacity: .5; pointer-events: none; }
+  .export-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid #e5e7eb; }
+  .btn-export { padding: 10px 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; transition: .2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-export:hover { background: #0f3d1f; }
+  .btn-export.secondary { background: #6b7280; }
+  .btn-export.secondary:hover { background: #4b5563; }
+  .kpi { text-align: center; padding: 22px 10px; }
+  .kpi-val { font-size: 2rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
+  .kpi-alert .kpi-val { color: var(--danger); }
+  .kpi-label { font-size: .78rem; color: var(--muted); margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+  .res-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .res-table th { background: #f0fdf4; padding: 10px; text-align: left; border-bottom: 2px solid var(--primary); font-weight: 600; white-space: nowrap; }
+  .res-table td { padding: 10px; border-bottom: 1px solid #f0f0f0; }
+  .res-table tr:hover { background: #f9fafb; }
+  .res-table .alert-cell { color: var(--danger); font-weight: 600; }
+  .res-table .delta-pos { color: #15803d; font-weight: 600; }
+  .res-table .delta-neg { color: var(--danger); font-weight: 600; }
+  footer.credit {
+    text-align: center; padding: 28px 18px; margin-top: 40px;
+    background: rgba(20,83,45,.95); color: #fff; font-size: .85rem;
+    border-top: 4px solid var(--secondary);
+    backdrop-filter: blur(4px);
+  }
+  footer.credit strong { color: #fde047; }
+  footer.credit .unahur-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,.1); padding: 8px 16px; border-radius: 20px;
+    margin-bottom: 12px; font-size: .8rem;
+  }
+  footer.credit .unahur-badge img { height: 30px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">MH</div>
-  <div>
-    <h1>Registro por persona — CCSC</h1>
-    <p>Posta de Tamizaje Tensional · CAPS Ángel Bo</p>
+  <div class="header-logos">
+    <!-- Escudo de Hurlingham -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Escudo_hurlingham.gif/120px-Escudo_hurlingham.gif" 
+         alt="Escudo de Hurlingham"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+    <span style="display:none; font-size:1.8rem;">🏛️</span>
+    
+    <!-- Logo UNAHUR -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/250px-Logo_oficial_UNAHur.png" 
+         alt="UNAHUR"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+    <span style="display:none; font-size:1.8rem;">🎓</span>
+  </div>
+  <h1>🩺 Posta de Tamizaje</h1>
+  <p>CAPS Dr. Ángel Bo — William Morris, Hurlingham</p>
+  <div class="header-row">
+    <div id="sync-badge" class="sync-badge local">Modo local (sin conectar)</div>
+    <div id="live-clock" class="clock-badge">📅 —</div>
   </div>
 </header>
 
+<nav class="tabs">
+  <button class="tab active" data-tab="hta">🩺 Hipertensión</button>
+  <button class="tab" data-tab="db">🩸 Diabetes</button>
+  <button class="tab" data-tab="resumen">📊 Resumen</button>
+</nav>
+
 <main>
-  <div class="card">
-    <h2>Control de presión arterial</h2>
-    <p class="hint">Un registro por cada persona controlada.</p>
-    <form id="form">
+<!-- ============ PANEL HIPERTENSIÓN ============ -->
+<section id="panel-hta" class="panel active">
+  <div class="grid">
+    <form id="form-hta" class="card" autocomplete="off">
+      <h2>Nuevo control de presión arterial</h2>
+      <div class="auto-fecha-info">
+        <span class="auto-fecha-icon">📅</span>
+        <div>
+          <div class="auto-fecha-label">Se registrará automáticamente al guardar</div>
+          <div class="auto-fecha-value" id="hta-fecha-preview">—</div>
+        </div>
+      </div>
+      <label>Nombre y apellido *</label>
+      <input type="text" id="hta-nombre" required autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Ej. Juan Pérez">
+      <label>Edad *</label>
+      <input type="number" id="hta-edad" min="1" max="120" required>
+      <label>Sexo *</label>
+      <select id="hta-sexo" required>
+        <option value="">Elegir…</option>
+        <option value="F">Femenino</option>
+        <option value="M">Masculino</option>
+        <option value="X">Otro / no binario</option>
+      </select>
       <div class="row">
-        <div>
-          <label for="fecha">Fecha</label>
-          <input type="date" id="fecha" required>
-        </div>
-        <div>
-          <label for="horario">Horario</label>
-          <input type="time" id="horario" required>
-        </div>
+        <div><label>Peso (kg) *</label><input type="number" id="hta-peso" min="20" max="250" step="0.1" required></div>
+        <div><label>Talla (m) *</label><input type="number" id="hta-talla" min="1" max="2.5" step="0.01" required placeholder="Ej. 1.70"></div>
       </div>
-
-      <label for="responsable">Responsable del control</label>
-      <input type="text" id="responsable" required placeholder="Nombre y apellido">
-
-      <label for="nombrePersona">Nombre y apellido del usuario
-        <small>O iniciales / DNI si se prefiere preservar identidad</small>
-      </label>
-      <input type="text" id="nombrePersona" required>
-
+      <div class="field-help">Con peso y talla se calcula el IMC automáticamente.</div>
       <div class="row">
-        <div>
-          <label for="edad">Edad</label>
-          <input type="number" id="edad" min="0" max="120">
-        </div>
-        <div>
-          <label for="sexo">Sexo</label>
-          <select id="sexo">
-            <option value="">Seleccionar...</option>
-            <option>Femenino</option>
-            <option>Masculino</option>
-            <option>Otro</option>
-            <option>Prefiere no decir</option>
-          </select>
-        </div>
+        <div><label>Presión sistólica (mmHg) *</label><input type="number" id="hta-sis" min="50" max="300" required placeholder="Ej. 130"></div>
+        <div><label>Presión diastólica (mmHg) *</label><input type="number" id="hta-dia" min="30" max="200" required placeholder="Ej. 85"></div>
       </div>
-
-      <label for="presion">Presión arterial (ej: 120/80)</label>
-      <input type="text" id="presion" placeholder="120/80" pattern="[0-9]{2,3}/[0-9]{2,3}" required>
-
-      <div class="result" id="result"></div>
-
-      <label>¿Tiene antecedentes familiares de hipertensión?</label>
-      <div class="row" id="antecedentesGroup">
-        <div><button type="button" class="opt-btn" data-field="antecedentes" data-value="No">No</button></div>
-        <div><button type="button" class="opt-btn" data-field="antecedentes" data-value="Sí">Sí</button></div>
-      </div>
-      <input type="hidden" id="antecedentes" value="No" required>
-
-      <label>¿Se derivó a la persona a Medicina General?</label>
-      <div class="row" id="derivacionGroup">
-        <div><button type="button" class="opt-btn" data-field="derivacion" data-value="No">No</button></div>
-        <div><button type="button" class="opt-btn" data-field="derivacion" data-value="Sí">Sí</button></div>
-      </div>
-      <input type="hidden" id="derivacion" value="No" required>
-
-      <label for="observaciones">Observaciones</label>
-      <textarea id="observaciones" placeholder="Ej: primer control, en tratamiento, etc."></textarea>
-
-      <button type="submit" class="btn-primary">Guardar registro</button>
-      <div class="status" id="status"></div>
+      <label>Teléfono de contacto</label>
+      <input type="tel" id="hta-tel" placeholder="Ej. 11 2345-6789">
+      <label>Notas (opcional)</label>
+      <input type="text" id="hta-notas" placeholder="Ej. fumador, diabético, etc.">
+      <button type="submit" class="submit">💾 Guardar control</button>
+      <div id="hta-result" class="result"></div>
     </form>
+    <div class="card">
+      <h2>Estado del tamizaje</h2>
+      <div class="counter" id="hta-count">0</div>
+      <div class="counter-label">Registros en este dispositivo</div>
+      <button class="btn-refresh" onclick="refreshFromSheet()">🔄 Actualizar desde Sheet</button>
+      <h3>⚠️ Alertas de seguimiento</h3>
+      <div id="hta-alerts"><div class="alert-empty">Sin alertas por ahora.</div></div>
+      <h3>Últimos registros</h3>
+      <div id="hta-last"><div class="alert-empty">Todavía no hay registros.</div></div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Clasificación PA por sexo</h2><div class="chart-wrap"><canvas id="hta-chart-clasif"></canvas></div></div>
+    <div class="card"><h2>Edad vs. presión sistólica</h2><div class="chart-wrap"><canvas id="hta-chart-scatter"></canvas></div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>IMC por sexo</h2><div class="chart-wrap"><canvas id="hta-chart-imc"></canvas></div></div>
+    <div class="card" style="display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:.9rem;background:rgba(255,255,255,.9);">
+      <div>📊 Los gráficos se actualizan automáticamente con cada registro cargado.<br><br>Clasificación PA según Sociedad Argentina de Cardiología.<br>Clasificación IMC según OMS.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PANEL DIABETES ============ -->
+<section id="panel-db" class="panel">
+  <div class="grid">
+    <form id="form-db" class="card" autocomplete="off">
+      <h2>Cuestionario FINDRISC (riesgo de diabetes tipo 2)</h2>
+      <div class="auto-fecha-info">
+        <span class="auto-fecha-icon">📅</span>
+        <div>
+          <div class="auto-fecha-label">Se registrará automáticamente al guardar</div>
+          <div class="auto-fecha-value" id="db-fecha-preview">—</div>
+        </div>
+      </div>
+      <label>Nombre y apellido *</label>
+      <input type="text" id="db-nombre" required autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Ej. Juan Pérez">
+      <label>Edad *</label>
+      <input type="number" id="db-edad" min="1" max="120" required>
+      <label>Sexo *</label>
+      <select id="db-sexo" required>
+        <option value="">Elegir…</option>
+        <option value="F">Femenino</option>
+        <option value="M">Masculino</option>
+        <option value="X">Otro / no binario</option>
+      </select>
+      <div class="row">
+        <div><label>Peso (kg) *</label><input type="number" id="db-peso" min="20" max="250" step="0.1" required></div>
+        <div><label>Talla (m) *</label><input type="number" id="db-talla" min="1" max="2.5" step="0.01" required placeholder="Ej. 1.70"></div>
+      </div>
+      <label>Cintura (cm) *</label>
+      <input type="number" id="db-cintura" min="30" max="200" required placeholder="Perímetro a la altura del ombligo">
+      <div class="field-help">El IMC se calcula automáticamente con peso y talla.</div>
+
+      <div class="pregunta">
+        <span class="label-q">¿Realiza actividad física ≥30 min/día?</span>
+        <div class="opts">
+          <label><input type="radio" name="db-act" value="0" required>Sí</label>
+          <label><input type="radio" name="db-act" value="2">No</label>
+        </div>
+      </div>
+      <div class="pregunta">
+        <span class="label-q">¿Consume verduras o frutas todos los días?</span>
+        <div class="opts">
+          <label><input type="radio" name="db-frut" value="0" required>Sí</label>
+          <label><input type="radio" name="db-frut" value="1">No</label>
+        </div>
+      </div>
+      <div class="pregunta">
+        <span class="label-q">¿Toma medicación para la presión arterial?</span>
+        <div class="opts">
+          <label><input type="radio" name="db-med" value="0" required>No</label>
+          <label><input type="radio" name="db-med" value="2">Sí</label>
+        </div>
+      </div>
+      <div class="pregunta">
+        <span class="label-q">¿Le han detectado glucosa alta alguna vez?</span>
+        <div class="opts">
+          <label><input type="radio" name="db-gluc" value="0" required>No</label>
+          <label><input type="radio" name="db-gluc" value="5">Sí</label>
+        </div>
+      </div>
+      <div class="pregunta">
+        <span class="label-q">¿Algún familiar tiene diabetes?</span>
+        <div class="opts">
+          <label><input type="radio" name="db-fam" value="0" required>No</label>
+          <label><input type="radio" name="db-fam" value="3">Abuelos/tíos/primos</label>
+          <label><input type="radio" name="db-fam" value="5">Padres/hermanos/hijos</label>
+        </div>
+      </div>
+
+      <label style="margin-top:14px">Teléfono de contacto</label>
+      <input type="tel" id="db-tel" placeholder="Ej. 11 2345-6789">
+      <button type="submit" class="submit">💾 Guardar tamizaje</button>
+      <div id="db-result" class="result"></div>
+    </form>
+    <div class="card">
+      <h2>Estado del tamizaje</h2>
+      <div class="counter" id="db-count">0</div>
+      <div class="counter-label">Registros en este dispositivo</div>
+      <h3>⚠️ Alertas de seguimiento</h3>
+      <div id="db-alerts"><div class="alert-empty">Sin alertas por ahora.</div></div>
+      <h3>Últimos registros</h3>
+      <div id="db-last"><div class="alert-empty">Todavía no hay registros.</div></div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Riesgo FINDRISC por sexo</h2><div class="chart-wrap"><canvas id="db-chart-riesgo"></canvas></div></div>
+    <div class="card"><h2>Distribución general de riesgo</h2><div class="chart-wrap"><canvas id="db-chart-donut"></canvas></div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>IMC por sexo</h2><div class="chart-wrap"><canvas id="db-chart-imc"></canvas></div></div>
+    <div class="card" style="display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:.9rem;background:rgba(255,255,255,.9);">
+      <div>FINDRISC: puntaje 0–26. Riesgo alto ≥15 pts (derivar a laboratorio).<br><br>Clasificación IMC según OMS.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PANEL RESUMEN ============ -->
+<section id="panel-resumen" class="panel">
+  <div class="card">
+    <h2>Período de análisis</h2>
+    <div class="filter-row" id="year-filter-row">
+      <label for="year-filter">🗓️ Filtrar por año:</label>
+      <select id="year-filter"><option value="">Todos los años</option></select>
+      <span class="period-info" id="year-info">Sin filtro de año</span>
+    </div>
+    <div class="period-btns">
+      <button class="period-btn active" data-period="mes">📅 Mensual</button>
+      <button class="period-btn" data-period="trimestre">📆 Trimestral</button>
+      <button class="period-btn" data-period="semestre">🗓️ Semestral</button>
+      <button class="period-btn" data-period="anual">📊 Anual</button>
+      <button class="period-btn" data-period="comparar">⚖️ Comparar años</button>
+    </div>
+    <p class="period-info" id="period-info">Mostrando todos los meses registrados</p>
+    <div class="export-row">
+      <button class="btn-export" onclick="exportSummaryCSV()">📊 Exportar resumen (CSV)</button>
+      <button class="btn-export secondary" onclick="exportRawCSV()">📋 Exportar registros completos (CSV)</button>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="toolbar">
-      <h2>Registros en este dispositivo (<span id="count">0</span>)</h2>
-      <button class="btn-secondary" id="exportBtn">Exportar CSV</button>
-    </div>
-    <div class="tablewrap" id="tableWrap"><div class="empty">Todavía no cargaste ningún registro.</div></div>
+  <div class="grid grid-4">
+    <div class="card kpi"><div class="kpi-val" id="kpi-hta">0</div><div class="kpi-label">Registros HTA</div></div>
+    <div class="card kpi"><div class="kpi-val" id="kpi-db">0</div><div class="kpi-label">Registros Diabetes</div></div>
+    <div class="card kpi kpi-alert"><div class="kpi-val" id="kpi-alertas">0</div><div class="kpi-label">Alertas totales</div></div>
+    <div class="card kpi"><div class="kpi-val" id="kpi-edad">—</div><div class="kpi-label">Edad promedio</div></div>
   </div>
+
+  <div class="card"><h2>Evolución de registros por período</h2><div class="chart-wrap" style="height:320px"><canvas id="res-evol"></canvas></div></div>
+  <div class="grid">
+    <div class="card"><h2>Alertas por período</h2><div class="chart-wrap"><canvas id="res-alertas"></canvas></div></div>
+    <div class="card"><h2>IMC promedio por período</h2><div class="chart-wrap"><canvas id="res-imc"></canvas></div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Distribución general</h2><div class="chart-wrap"><canvas id="res-dist"></canvas></div></div>
+    <div class="card"><h2>Alertas HTA vs Diabetes</h2><div class="chart-wrap"><canvas id="res-comp-alert"></canvas></div></div>
+  </div>
+
+  <div class="card" id="year-compare-card" style="display:none">
+    <h2>Comparación año a año</h2>
+    <div style="overflow-x:auto">
+      <table class="res-table">
+        <thead><tr>
+          <th>Año</th><th>Total registros</th><th>Alertas</th><th>% Alertas</th>
+          <th>Δ vs año anterior</th><th>Edad prom.</th><th>IMC prom.</th>
+        </tr></thead>
+        <tbody id="year-compare-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" id="main-summary-card">
+    <h2>Tabla resumen</h2>
+    <div style="overflow-x:auto">
+      <table class="res-table">
+        <thead><tr>
+          <th>Período</th><th>HTA</th><th>Alertas HTA</th><th>% alert.</th>
+          <th>DB</th><th>Alertas DB</th><th>% alert.</th>
+          <th>Edad prom.</th><th>IMC prom.</th>
+        </tr></thead>
+        <tbody id="res-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 </main>
 
+<footer class="credit">
+  <div class="unahur-badge">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Logo_oficial_UNAHur.png/80px-Logo_oficial_UNAHur.png" 
+         alt="UNAHUR"
+         onerror="this.style.display='none'">
+    <strong>UNAHUR</strong>
+  </div>
+  <br>
+  Desarrollado por <strong>alumnos de la Universidad Nacional de Hurlingham (UNAHUR)</strong><br>
+  <span style="opacity:.85; font-size:.8rem;">Materia <strong>Salud Comunitaria 5</strong> — Comprometidos con la salud pública de nuestro distrito</span>
+</footer>
+
 <script>
-// ⚠️ Pegá acá la URL del Google Apps Script Web App (ver README.md / apps-script.gs)
-const SHEET_WEBHOOK_URL = "";
+/* ============================================================
+   CONFIGURACIÓN — Pegá acá la URL del Google Apps Script
+   ============================================================ */
+const CONFIG = {
+  WEB_APP_URL: "" // Ej: "https://script.google.com/macros/s/AKfycb.../exec"
+};
 
-const KEY = "rou_ccsc_personas_hurlingham";
-const load = () => JSON.parse(localStorage.getItem(KEY) || "[]");
-const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+const LS_HTA = "caps_hta_records";
+const LS_DB  = "caps_db_records";
+let htaRecords = JSON.parse(localStorage.getItem(LS_HTA) || "[]");
+let dbRecords  = JSON.parse(localStorage.getItem(LS_DB)  || "[]");
+let charts = {};
+let currentPeriod = "mes";
+let savingHta = false, savingDb = false;
 
-document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
-
-function parsePresion(str){
-  const m = (str||'').match(/^(\d{2,3})\s*\/\s*(\d{2,3})$/);
-  if(!m) return null;
-  return { sist: parseInt(m[1]), diast: parseInt(m[2]) };
+/* ---------- FECHA AUTOMÁTICA ---------- */
+function generateRecordId() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}-${Math.random().toString(36).substring(2,8)}`;
 }
-
-function resultadoTA(sist, diast){
-  if (isNaN(sist) || isNaN(diast)) return null;
-  return (sist >= 140 || diast >= 90) ? 'Alterada' : 'Normal';
+function updateFechaPreview() {
+  const fmt = new Date().toLocaleString('es-AR', { weekday:'long', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  const a = document.getElementById('hta-fecha-preview');
+  const b = document.getElementById('db-fecha-preview');
+  if (a) a.textContent = fmt.charAt(0).toUpperCase() + fmt.slice(1);
+  if (b) b.textContent = fmt.charAt(0).toUpperCase() + fmt.slice(1);
 }
-
-function updateResult(){
-  const p = parsePresion(presion.value);
-  const el = document.getElementById('result');
-  if(!p){ el.style.display='none'; return; }
-  const r = resultadoTA(p.sist, p.diast);
-  el.className = 'result ' + (r==='Alterada' ? 'alterada' : 'normal');
-  el.textContent = r === 'Alterada'
-    ? '⚠ TA alterada (≥ 140/90) — considerar derivación protegida'
-    : '✔ TA dentro de rango normal';
-  if(r === 'Alterada') setDerivacion('Sí');
+function updateLiveClock() {
+  const el = document.getElementById('live-clock');
+  if (!el) return;
+  el.textContent = "📅 " + new Date().toLocaleString('es-AR', { weekday:'short', day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
-presion.addEventListener('input', updateResult);
+setInterval(() => { updateFechaPreview(); updateLiveClock(); }, 30000);
 
-// Botones Sí/No de antecedentes familiares
-function setAntecedentes(valor){
-  document.getElementById('antecedentes').value = valor;
-  document.querySelectorAll('.opt-btn[data-field="antecedentes"]').forEach(b=>{
-    b.classList.toggle('active', b.dataset.value === valor);
+/* ---------- LIMPIEZA DE NOMBRE ---------- */
+function cleanName(name) {
+  return String(name || '').trim().replace(/\s+/g, ' ').split(' ')
+    .map(w => w.length ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '')
+    .join(' ').trim();
+}
+document.getElementById('hta-nombre').addEventListener('blur', function() { this.value = cleanName(this.value); });
+document.getElementById('db-nombre').addEventListener('blur', function() { this.value = cleanName(this.value); });
+
+/* ---------- ANTI-DUPLICADO ---------- */
+function findRecentDuplicate(tipo, nombre, ventanaMinutos) {
+  const records = tipo === 'hta' ? htaRecords : dbRecords;
+  const ahora = Date.now();
+  const ventana = ventanaMinutos * 60 * 1000;
+  const nombreLimpio = cleanName(nombre).toLowerCase();
+  const recientes = records.filter(r => {
+    const t = new Date(r.fecha).getTime();
+    if (isNaN(t) || (ahora - t) > ventana) return false;
+    return cleanName(r.nombre).toLowerCase() === nombreLimpio;
   });
+  if (!recientes.length) return null;
+  recientes.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  return recientes[0];
 }
-document.querySelectorAll('.opt-btn[data-field="antecedentes"]').forEach(b=>{
-  b.addEventListener('click', () => setAntecedentes(b.dataset.value));
+
+/* ---------- HELPERS ---------- */
+function esc(s) { return String(s || "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtFecha(iso) { if (!iso) return ""; const d = new Date(iso); return isNaN(d.getTime()) ? String(iso) : d.toLocaleDateString("es-AR") + " " + d.toLocaleTimeString("es-AR", { hour:"2-digit", minute:"2-digit" }); }
+function clasificarPA(sys, dia) {
+  if (sys >= 180 || dia >= 120) return "Crisis hipertensiva";
+  if (sys >= 140 || dia >= 90) return "HTA Grado 2";
+  if (sys >= 130 || dia >= 80) return "HTA Grado 1";
+  if (sys >= 120 && dia < 80) return "Presión elevada";
+  if (sys < 90 || dia < 60) return "Hipotensión";
+  return "Normal";
+}
+function alertaHTA(c) { return ["Crisis hipertensiva", "HTA Grado 2", "Hipotensión"].includes(c) ? "Sí" : "No"; }
+function clasificarIMC(imc) {
+  if (imc < 18.5) return "Bajo peso";
+  if (imc < 25) return "Normal";
+  if (imc < 30) return "Sobrepeso";
+  if (imc < 35) return "Obesidad I";
+  if (imc < 40) return "Obesidad II";
+  return "Obesidad III";
+}
+function waLink(phone, nombre, tipo, detalle) {
+  if (!phone) return null;
+  const clean = String(phone).replace(/\D/g, '');
+  if (clean.length < 8) return null;
+  const num = clean.startsWith('54') ? clean : (clean.length === 10 ? '549' + clean : '54' + clean);
+  return `https://wa.me/${num}?text=${encodeURIComponent(`Hola ${nombre}, le escribimos del CAPS Dr. Ángel Bo. En su control de ${tipo} se detectó: ${detalle}. Por favor comuníquese para coordinar seguimiento.`)}`;
+}
+function calcularFindrisc(d) {
+  let pts = {};
+  const e = +d.edad;
+  pts.edad = e < 45 ? 0 : e < 55 ? 2 : e < 65 ? 3 : 4;
+  const imc = d.peso / (d.talla * d.talla);
+  pts.imc = imc < 25 ? 0 : imc < 30 ? 1 : 3;
+  pts.cintura = d.sexo === "M" ? (d.cintura < 94 ? 0 : d.cintura < 102 ? 3 : 4) : (d.cintura < 80 ? 0 : d.cintura < 88 ? 3 : 4);
+  pts.act = +d.act; pts.frut = +d.frut; pts.med = +d.med; pts.gluc = +d.gluc; pts.fam = +d.fam;
+  const total = Object.values(pts).reduce((a, b) => a + b, 0);
+  let riesgo = total < 7 ? "Bajo" : total < 12 ? "Ligeramente elevado" : total < 15 ? "Moderado" : total <= 20 ? "Alto" : "Muy alto";
+  return { pts, total, imc, riesgo, alerta: total >= 15 ? "Sí" : "No" };
+}
+
+/* ---------- TABS / PERÍODOS ---------- */
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+    renderCharts(btn.dataset.tab);
+  });
 });
-setAntecedentes('No');
-
-// Botones Sí/No de derivación
-function setDerivacion(valor){
-  document.getElementById('derivacion').value = valor;
-  document.querySelectorAll('.opt-btn[data-field="derivacion"]').forEach(b=>{
-    b.classList.toggle('active', b.dataset.value === valor);
+document.querySelectorAll(".period-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentPeriod = btn.dataset.period;
+    const row = document.getElementById("year-filter-row");
+    if (currentPeriod === "comparar") { row.classList.add("disabled"); document.getElementById("year-info").textContent = "No aplica en comparación año a año"; }
+    else { row.classList.remove("disabled"); updateYearInfo(); }
+    renderResumen();
   });
-}
-document.querySelectorAll('.opt-btn[data-field="derivacion"]').forEach(b=>{
-  b.addEventListener('click', () => setDerivacion(b.dataset.value));
 });
-setDerivacion('No');
 
-
-function renderTable(){
-  const data = load();
-  document.getElementById('count').textContent = data.length;
-  const wrap = document.getElementById('tableWrap');
-  if(!data.length){ wrap.innerHTML = '<div class="empty">Todavía no cargaste ningún registro.</div>'; return; }
-  let html = '<table><tr><th>Fecha</th><th>Nombre</th><th>TA</th><th>Resultado</th><th>Antecedentes</th><th>Derivación</th></tr>';
-  data.slice().reverse().slice(0,30).forEach(d=>{
-    const cls = d.resultado === 'Alterada' ? 'badge-alt' : '';
-    html += `<tr><td>${d.fecha}</td><td>${d.nombrePersona}</td><td>${d.presion}</td><td class="${cls}">${d.resultado}</td><td>${d.antecedentes}</td><td>${d.derivacion}</td></tr>`;
-  });
-  html += '</table>';
-  wrap.innerHTML = html;
+/* ---------- FILTRO POR AÑO ---------- */
+function populateYearFilter() {
+  const sel = document.getElementById("year-filter");
+  if (!sel) return;
+  const currentVal = sel.value;
+  const years = new Set();
+  [...htaRecords, ...dbRecords].forEach(r => { const d = new Date(r.fecha); if (!isNaN(d.getTime())) years.add(d.getFullYear()); });
+  const sorted = Array.from(years).sort((a, b) => b - a);
+  sel.innerHTML = '<option value="">Todos los años</option>' + sorted.map(y => `<option value="${y}">${y}</option>`).join("");
+  if (sorted.map(String).includes(currentVal)) sel.value = currentVal;
 }
-renderTable();
+function updateYearInfo() {
+  const sel = document.getElementById("year-filter");
+  if (!sel) return;
+  const info = document.getElementById("year-info");
+  const val = sel.value;
+  info.textContent = currentPeriod === "comparar" ? "No aplica en comparación año a año" : val ? `Mostrando solo registros de ${val}` : "Sin filtro de año";
+}
+document.addEventListener("change", e => { if (e.target && e.target.id === "year-filter") { updateYearInfo(); renderResumen(); } });
 
-document.getElementById('form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const p = parsePresion(presion.value);
-  const entry = {
-    fecha: fecha.value, horario: horario.value, responsable: responsable.value,
-    nombrePersona: nombrePersona.value, edad: edad.value, sexo: sexo.value,
-    presion: presion.value, resultado: p ? resultadoTA(p.sist, p.diast) : '',
-    antecedentes: antecedentes.value, derivacion: derivacion.value,
-    observaciones: observaciones.value, timestamp: new Date().toISOString()
-  };
-  const data = load(); data.push(entry); save(data);
-  renderTable();
-
-  const statusEl = document.getElementById('status');
-  if (SHEET_WEBHOOK_URL) {
-    try {
-      await fetch(SHEET_WEBHOOK_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: {'Content-Type':'text/plain'}, body: JSON.stringify(entry)
-      });
-      statusEl.className = 'status ok'; statusEl.textContent = 'Guardado y enviado a la planilla ✔';
-    } catch(err){
-      statusEl.className = 'status err'; statusEl.textContent = 'Guardado local. No se pudo enviar a la planilla.';
-    }
-  } else {
-    statusEl.className = 'status ok'; statusEl.textContent = 'Guardado en este dispositivo. Configurá SHEET_WEBHOOK_URL para sincronizar con Sheets.';
+/* ---------- ENVÍO ---------- */
+async function enviar(tipo, payload) {
+  if (!CONFIG.WEB_APP_URL) {
+    if (tipo === "hta") { htaRecords.push(payload); localStorage.setItem(LS_HTA, JSON.stringify(htaRecords)); }
+    else { dbRecords.push(payload); localStorage.setItem(LS_DB, JSON.stringify(dbRecords)); }
+    return { ok: true, local: true };
   }
-  e.target.reset();
-  document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
-  document.getElementById('result').style.display = 'none';
-  setAntecedentes('No');
-  setDerivacion('No');
+  try {
+    const res = await fetch(CONFIG.WEB_APP_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ tipo, ...payload }) });
+    return await res.json();
+  } catch (err) {
+    if (tipo === "hta") { htaRecords.push(payload); localStorage.setItem(LS_HTA, JSON.stringify(htaRecords)); }
+    else { dbRecords.push(payload); localStorage.setItem(LS_DB, JSON.stringify(dbRecords)); }
+    return { ok: true, local: true, error: err.toString() };
+  }
+}
+
+/* ---------- FORM HTA ---------- */
+document.getElementById("form-hta").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (savingHta) return;
+  const nombreLimpio = cleanName(document.getElementById("hta-nombre").value);
+  if (!nombreLimpio) { alert("Por favor ingresá el nombre del vecino."); document.getElementById("hta-nombre").focus(); return; }
+  document.getElementById("hta-nombre").value = nombreLimpio;
+  const dup = findRecentDuplicate("hta", nombreLimpio, 5);
+  if (dup) {
+    const min = Math.max(1, Math.round((Date.now() - new Date(dup.fecha).getTime()) / 60000));
+    if (!confirm(`⚠️ Ya se cargó a "${nombreLimpio}" hace ${min} min.\nPresión: ${dup.sistolica}/${dup.diastolica} mmHg — ${dup.clasificacion}\n\n¿Guardar de todos modos (control nuevo)?`)) return;
+  }
+  savingHta = true;
+  const btn = e.target.querySelector("button.submit");
+  btn.disabled = true; btn.textContent = "Guardando…";
+  const peso = +document.getElementById("hta-peso").value, talla = +document.getElementById("hta-talla").value;
+  const imc = +(peso / (talla * talla)).toFixed(1), imcClasif = clasificarIMC(imc);
+  const sys = +document.getElementById("hta-sis").value, dia = +document.getElementById("hta-dia").value;
+  const clasif = clasificarPA(sys, dia), alerta = alertaHTA(clasif);
+  const fechaAuto = new Date(), idUnico = generateRecordId();
+  const payload = { id: idUnico, fecha: fechaAuto.toISOString(), nombre: nombreLimpio, edad: +document.getElementById("hta-edad").value, sexo: document.getElementById("hta-sexo").value, peso, talla, imc, imc_clasificacion: imcClasif, sistolica: sys, diastolica: dia, clasificacion: clasif, alerta, telefono: document.getElementById("hta-tel").value.trim(), notas: document.getElementById("hta-notas").value.trim() };
+  try {
+    await enviar("hta", payload);
+    const resBox = document.getElementById("hta-result");
+    resBox.className = "result show " + (alerta === "Sí" ? "danger" : clasif === "Normal" ? "ok" : "warn");
+    resBox.innerHTML = `<div style="font-size:1.15rem">${clasif}</div><div style="font-weight:400;font-size:.85rem;margin-top:4px">${sys}/${dia} mmHg — ${alerta === "Sí" ? "⚠️ Requiere seguimiento" : "Sin alerta"}</div><div style="font-weight:400;font-size:.85rem;margin-top:4px">IMC: ${imc} — ${imcClasif}</div><div style="font-weight:400;font-size:.8rem;margin-top:6px;opacity:.75">👤 ${nombreLimpio} · 📅 ${fmtFecha(payload.fecha)}</div>`;
+    e.target.reset(); render(); setTimeout(() => { resBox.className = "result"; }, 10000);
+  } catch (err) { alert("Error al guardar: " + err); }
+  finally { savingHta = false; btn.disabled = false; btn.textContent = "💾 Guardar control"; }
 });
 
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = load();
-  if(!data.length) return;
-  const headers = Object.keys(data[0]);
-  const rows = [headers.join(',')].concat(
-    data.map(d => headers.map(h => `"${String(d[h]??'').replace(/"/g,'""')}"`).join(','))
-  );
-  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'rou_ccsc_personas.csv';
-  a.click();
+/* ---------- FORM DIABETES ---------- */
+document.getElementById("form-db").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (savingDb) return;
+  const nombreLimpio = cleanName(document.getElementById("db-nombre").value);
+  if (!nombreLimpio) { alert("Por favor ingresá el nombre del vecino."); document.getElementById("db-nombre").focus(); return; }
+  document.getElementById("db-nombre").value = nombreLimpio;
+  const dup = findRecentDuplicate("db", nombreLimpio, 5);
+  if (dup) {
+    const min = Math.max(1, Math.round((Date.now() - new Date(dup.fecha).getTime()) / 60000));
+    if (!confirm(`⚠️ Ya se cargó a "${nombreLimpio}" hace ${min} min.\nRiesgo: ${dup.riesgo} (${dup.puntaje} pts)\n\n¿Guardar de todos modos?`)) return;
+  }
+  savingDb = true;
+  const btn = e.target.querySelector("button.submit");
+  btn.disabled = true; btn.textContent = "Guardando…";
+  const d = { edad: +document.getElementById("db-edad").value, sexo: document.getElementById("db-sexo").value, peso: +document.getElementById("db-peso").value, talla: +document.getElementById("db-talla").value, cintura: +document.getElementById("db-cintura").value, act: document.querySelector('input[name="db-act"]:checked').value, frut: document.querySelector('input[name="db-frut"]:checked').value, med: document.querySelector('input[name="db-med"]:checked').value, gluc: document.querySelector('input[name="db-gluc"]:checked').value, fam: document.querySelector('input[name="db-fam"]:checked').value };
+  const r = calcularFindrisc(d), imcClasif = clasificarIMC(r.imc);
+  const fechaAuto = new Date(), idUnico = generateRecordId();
+  const payload = { id: idUnico, fecha: fechaAuto.toISOString(), nombre: nombreLimpio, edad: d.edad, sexo: d.sexo, peso: d.peso, talla: d.talla, imc: +r.imc.toFixed(1), imc_clasificacion: imcClasif, cintura: d.cintura, puntaje: r.total, riesgo: r.riesgo, alerta: r.alerta, telefono: document.getElementById("db-tel").value.trim(), detalle: JSON.stringify(r.pts) };
+  try {
+    await enviar("db", payload);
+    const resBox = document.getElementById("db-result");
+    resBox.className = "result show " + (r.alerta === "Sí" ? "danger" : r.riesgo === "Bajo" ? "ok" : "warn");
+    resBox.innerHTML = `<div style="font-size:1.15rem">Riesgo: ${r.riesgo} (${r.total} pts)</div><div style="font-weight:400;font-size:.85rem;margin-top:4px">${r.alerta === "Sí" ? "⚠️ Derivar a laboratorio" : "Sin alerta"}</div><div style="font-weight:400;font-size:.85rem;margin-top:4px">IMC: ${payload.imc} — ${imcClasif}</div><div style="font-weight:400;font-size:.8rem;margin-top:6px;opacity:.75">👤 ${nombreLimpio} · 📅 ${fmtFecha(payload.fecha)}</div>`;
+    e.target.reset(); render(); setTimeout(() => { resBox.className = "result"; }, 10000);
+  } catch (err) { alert("Error al guardar: " + err); }
+  finally { savingDb = false; btn.disabled = false; btn.textContent = "💾 Guardar tamizaje"; }
 });
+
+/* ---------- SYNC ---------- */
+async function refreshFromSheet() {
+  if (!CONFIG.WEB_APP_URL) { alert("Configurá primero la URL del Apps Script en CONFIG."); return; }
+  try {
+    const res = await fetch(CONFIG.WEB_APP_URL);
+    const data = await res.json();
+    if (Array.isArray(data.hta)) htaRecords = data.hta;
+    if (Array.isArray(data.db)) dbRecords = data.db;
+    localStorage.setItem(LS_HTA, JSON.stringify(htaRecords));
+    localStorage.setItem(LS_DB, JSON.stringify(dbRecords));
+    populateYearFilter(); render();
+  } catch (err) { alert("Error al conectar con el Sheet: " + err); }
+}
+
+/* ---------- RENDER PRINCIPAL ---------- */
+function render() {
+  document.getElementById("hta-count").textContent = htaRecords.length;
+  document.getElementById("db-count").textContent = dbRecords.length;
+  const aH = htaRecords.filter(r => r.alerta === "Sí");
+  document.getElementById("hta-alerts").innerHTML = aH.length ? aH.slice(-5).reverse().map(r => { const wa = waLink(r.telefono, r.nombre, "presión arterial", `${r.sistolica}/${r.diastolica} mmHg (${r.clasificacion})`); return `<div class="alert-item"><strong>${esc(r.nombre)}</strong> (${r.edad}a) — ${r.sistolica}/${r.diastolica} mmHg<br><span style="font-size:.8rem;color:#555">${esc(r.clasificacion)} · IMC ${r.imc||"—"} (${esc(r.imc_clasificacion)||"—"})</span>${wa?`<br><a href="${wa}" target="_blank" class="wa-btn">📱 WhatsApp</a>`:""}</div>`; }).join("") : '<div class="alert-empty">Sin alertas por ahora.</div>';
+  const aD = dbRecords.filter(r => r.alerta === "Sí");
+  document.getElementById("db-alerts").innerHTML = aD.length ? aD.slice(-5).reverse().map(r => { const wa = waLink(r.telefono, r.nombre, "riesgo de diabetes", `riesgo ${r.riesgo} (${r.puntaje} pts)`); return `<div class="alert-item"><strong>${esc(r.nombre)}</strong> (${r.edad}a) — Riesgo ${esc(r.riesgo)} (${r.puntaje} pts)<br><span style="font-size:.8rem;color:#555">IMC ${r.imc||"—"} (${esc(r.imc_clasificacion)||"—"})</span>${wa?`<br><a href="${wa}" target="_blank" class="wa-btn">📱 WhatsApp</a>`:""}</div>`; }).join("") : '<div class="alert-empty">Sin alertas por ahora.</div>';
+  const h5 = htaRecords.slice(-3).reverse();
+  document.getElementById("hta-last").innerHTML = h5.length ? h5.map(r => `<div style="font-size:.85rem;padding:6px 0;border-bottom:1px solid #eee">${esc(r.nombre)} — ${r.sistolica}/${r.diastolica} (${esc(r.clasificacion)})</div>`).join("") : '<div class="alert-empty">Todavía no hay registros.</div>';
+  const d5 = dbRecords.slice(-3).reverse();
+  document.getElementById("db-last").innerHTML = d5.length ? d5.map(r => `<div style="font-size:.85rem;padding:6px 0;border-bottom:1px solid #eee">${esc(r.nombre)} — ${esc(r.riesgo)} (${r.puntaje} pts)</div>`).join("") : '<div class="alert-empty">Todavía no hay registros.</div>';
+  renderCharts(document.querySelector(".tab.active").dataset.tab);
+}
+
+/* ---------- CHARTS ---------- */
+function renderCharts(tab) {
+  if (tab === "hta") renderHtaCharts();
+  if (tab === "db") renderDbCharts();
+  if (tab === "resumen") { populateYearFilter(); renderResumen(); }
+}
+const IMC_CATS = ["Bajo peso", "Normal", "Sobrepeso", "Obesidad I", "Obesidad II", "Obesidad III"];
+function renderHtaCharts() {
+  const clasifs = ["Normal", "Presión elevada", "HTA Grado 1", "HTA Grado 2", "Crisis hipertensiva", "Hipotensión"];
+  if (charts.htaClasif) charts.htaClasif.destroy();
+  charts.htaClasif = new Chart(document.getElementById("hta-chart-clasif"), { type:"bar", data:{ labels: clasifs, datasets: [ { label:"Mujeres", data: clasifs.map(c => htaRecords.filter(r => r.sexo==="F" && r.clasificacion===c).length), backgroundColor:"#d63384" }, { label:"Hombres", data: clasifs.map(c => htaRecords.filter(r => r.sexo==="M" && r.clasificacion===c).length), backgroundColor:"#14532d" }, { label:"Otro/NB", data: clasifs.map(c => htaRecords.filter(r => r.sexo==="X" && r.clasificacion===c).length), backgroundColor:"#6f42c1" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+  if (charts.htaScatter) charts.htaScatter.destroy();
+  charts.htaScatter = new Chart(document.getElementById("hta-chart-scatter"), { type:"scatter", data:{ datasets: [ { label:"Mujeres", data: htaRecords.filter(r => r.sexo==="F").map(r => ({ x:+r.edad, y:+r.sistolica })), backgroundColor:"#d63384" }, { label:"Hombres", data: htaRecords.filter(r => r.sexo==="M").map(r => ({ x:+r.edad, y:+r.sistolica })), backgroundColor:"#14532d" }, { label:"Otro/NB", data: htaRecords.filter(r => r.sexo==="X").map(r => ({ x:+r.edad, y:+r.sistolica })), backgroundColor:"#6f42c1" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ title:{ display:true, text:"Edad (años)" } }, y:{ title:{ display:true, text:"Presión sistólica (mmHg)" }, beginAtZero:false } } } });
+  if (charts.htaIMC) charts.htaIMC.destroy();
+  charts.htaIMC = new Chart(document.getElementById("hta-chart-imc"), { type:"bar", data:{ labels: IMC_CATS, datasets: [ { label:"Mujeres", data: IMC_CATS.map(c => htaRecords.filter(r => r.sexo==="F" && r.imc_clasificacion===c).length), backgroundColor:"#d63384" }, { label:"Hombres", data: IMC_CATS.map(c => htaRecords.filter(r => r.sexo==="M" && r.imc_clasificacion===c).length), backgroundColor:"#14532d" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+}
+function renderDbCharts() {
+  const riesgos = ["Bajo", "Ligeramente elevado", "Moderado", "Alto", "Muy alto"];
+  const colors = ["#15803d", "#22c55e", "#f59e0b", "#ea580c", "#b91c1c"];
+  if (charts.dbRiesgo) charts.dbRiesgo.destroy();
+  charts.dbRiesgo = new Chart(document.getElementById("db-chart-riesgo"), { type:"bar", data:{ labels: riesgos, datasets: [ { label:"Mujeres", data: riesgos.map(x => dbRecords.filter(r => r.sexo==="F" && r.riesgo===x).length), backgroundColor:"#d63384" }, { label:"Hombres", data: riesgos.map(x => dbRecords.filter(r => r.sexo==="M" && r.riesgo===x).length), backgroundColor:"#14532d" }, { label:"Otro/NB", data: riesgos.map(x => dbRecords.filter(r => r.sexo==="X" && r.riesgo===x).length), backgroundColor:"#6f42c1" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+  if (charts.dbDonut) charts.dbDonut.destroy();
+  charts.dbDonut = new Chart(document.getElementById("db-chart-donut"), { type:"doughnut", data:{ labels: riesgos, datasets: [ { data: riesgos.map(x => dbRecords.filter(r => r.riesgo===x).length), backgroundColor: colors } ] }, options:{ responsive:true, maintainAspectRatio:false } });
+  if (charts.dbIMC) charts.dbIMC.destroy();
+  charts.dbIMC = new Chart(document.getElementById("db-chart-imc"), { type:"bar", data:{ labels: IMC_CATS, datasets: [ { label:"Mujeres", data: IMC_CATS.map(c => dbRecords.filter(r => r.sexo==="F" && r.imc_clasificacion===c).length), backgroundColor:"#d63384" }, { label:"Hombres", data: IMC_CATS.map(c => dbRecords.filter(r => r.sexo==="M" && r.imc_clasificacion===c).length), backgroundColor:"#14532d" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+}
+
+/* ---------- DASHBOARD RESUMEN ---------- */
+const MESES_ABR = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+function getPeriodKey(fecha, period) {
+  const d = new Date(fecha); if (isNaN(d.getTime())) return null;
+  const y = d.getFullYear(), m = d.getMonth();
+  if (period === "mes") return `${y}-${String(m+1).padStart(2,"0")}`;
+  if (period === "trimestre") return `${y}-T${Math.floor(m/3)+1}`;
+  if (period === "semestre") return `${y}-S${m<6?1:2}`;
+  return `${y}`;
+}
+function periodLabel(key) {
+  if (key.includes("-T")) { const [y,t] = key.split("-T"); return `T${t} ${y}`; }
+  if (key.includes("-S")) { const [y,s] = key.split("-S"); return `S${s} ${y}`; }
+  if (key.includes("-")) { const [y,m] = key.split("-"); return `${MESES_ABR[+m-1]} ${y}`; }
+  return key;
+}
+function aggregate(period, yearFilter) {
+  const hta = {}, db = {}, all = new Set();
+  const matchYear = fecha => { if (!yearFilter) return true; const d = new Date(fecha); return !isNaN(d.getTime()) && d.getFullYear() === +yearFilter; };
+  const add = (agg, k, r) => { if (!agg[k]) agg[k] = { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 }; agg[k].total++; if (r.alerta === "Sí") agg[k].alertas++; if (r.imc) { agg[k].imcSum += +r.imc; agg[k].imcCnt++; } if (r.edad) { agg[k].edadSum += +r.edad; agg[k].edadCnt++; } };
+  htaRecords.filter(r => matchYear(r.fecha)).forEach(r => { const k = getPeriodKey(r.fecha, period); if (!k) return; all.add(k); add(hta, k, r); });
+  dbRecords.filter(r => matchYear(r.fecha)).forEach(r => { const k = getPeriodKey(r.fecha, period); if (!k) return; all.add(k); add(db, k, r); });
+  return { hta, db, periods: Array.from(all).sort() };
+}
+function setPeriodInfo() {
+  const txt = { mes:"Mostrando todos los meses registrados", trimestre:"Mostrando todos los trimestres registrados", semestre:"Mostrando todos los semestres registrados", anual:"Mostrando el total por año", comparar:"Comparación año a año con variación" };
+  document.getElementById("period-info").textContent = txt[currentPeriod] || "";
+}
+function renderResumen() {
+  setPeriodInfo(); updateYearInfo();
+  const sel = document.getElementById("year-filter");
+  const yearFilter = currentPeriod === "comparar" ? "" : (sel ? sel.value : "");
+  const { hta, db, periods } = aggregate(currentPeriod, yearFilter);
+  const labels = periods.map(periodLabel);
+  const kpiHta = periods.reduce((a,p) => a + (hta[p]?.total || 0), 0);
+  const kpiDb = periods.reduce((a,p) => a + (db[p]?.total || 0), 0);
+  const kpiAl = periods.reduce((a,p) => a + (hta[p]?.alertas || 0) + (db[p]?.alertas || 0), 0);
+  const edSum = periods.reduce((a,p) => a + (hta[p]?.edadSum || 0) + (db[p]?.edadSum || 0), 0);
+  const edCnt = periods.reduce((a,p) => a + (hta[p]?.edadCnt || 0) + (db[p]?.edadCnt || 0), 0);
+  const edadProm = edCnt ? Math.round(edSum / edCnt) : "—";
+  document.getElementById("kpi-hta").textContent = kpiHta;
+  document.getElementById("kpi-db").textContent = kpiDb;
+  document.getElementById("kpi-alertas").textContent = kpiAl;
+  document.getElementById("kpi-edad").textContent = edadProm === "—" ? "—" : edadProm + " años";
+
+  const chartType = (currentPeriod === "mes" && periods.length > 24) ? "line" : "bar";
+  if (charts.resEvol) charts.resEvol.destroy();
+  charts.resEvol = new Chart(document.getElementById("res-evol"), { type: chartType, data:{ labels, datasets: [ { label:"HTA", data: periods.map(p => hta[p]?.total || 0), backgroundColor:"#14532d", borderColor:"#14532d", tension:.3, fill:false }, { label:"Diabetes", data: periods.map(p => db[p]?.total || 0), backgroundColor:"#7f1d1d", borderColor:"#7f1d1d", tension:.3, fill:false } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+
+  if (charts.resAlertas) charts.resAlertas.destroy();
+  charts.resAlertas = new Chart(document.getElementById("res-alertas"), { type:"bar", data:{ labels, datasets: [ { label:"Alertas HTA", data: periods.map(p => hta[p]?.alertas || 0), backgroundColor:"#b91c1c" }, { label:"Alertas DB", data: periods.map(p => db[p]?.alertas || 0), backgroundColor:"#ea580c" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } } } });
+
+  const imcHta = periods.map(p => hta[p]?.imcCnt ? +(hta[p].imcSum / hta[p].imcCnt).toFixed(1) : null);
+  const imcDb = periods.map(p => db[p]?.imcCnt ? +(db[p].imcSum / db[p].imcCnt).toFixed(1) : null);
+  if (charts.resImc) charts.resImc.destroy();
+  charts.resImc = new Chart(document.getElementById("res-imc"), { type:"line", data:{ labels, datasets: [ { label:"IMC prom. HTA", data: imcHta, borderColor:"#14532d", backgroundColor:"rgba(20,83,45,.12)", tension:.3, spanGaps:true, fill:true }, { label:"IMC prom. DB", data: imcDb, borderColor:"#7f1d1d", backgroundColor:"rgba(127,29,29,.12)", tension:.3, spanGaps:true, fill:true } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:false } } } });
+
+  if (charts.resDist) charts.resDist.destroy();
+  charts.resDist = new Chart(document.getElementById("res-dist"), { type:"doughnut", data:{ labels: ["Alertas HTA", "Alertas DB", "Sin alerta HTA", "Sin alerta DB"], datasets: [ { data: [ periods.reduce((a,p) => a + (hta[p]?.alertas || 0), 0), periods.reduce((a,p) => a + (db[p]?.alertas || 0), 0), periods.reduce((a,p) => a + ((hta[p]?.total || 0) - (hta[p]?.alertas || 0)), 0), periods.reduce((a,p) => a + ((db[p]?.total || 0) - (db[p]?.alertas || 0)), 0) ], backgroundColor: ["#b91c1c", "#ea580c", "#bbf7d0", "#86efac"] } ] }, options:{ responsive:true, maintainAspectRatio:false } });
+
+  if (charts.resComp) charts.resComp.destroy();
+  charts.resComp = new Chart(document.getElementById("res-comp-alert"), { type:"bar", data:{ labels, datasets: [ { label:"% alertas HTA", data: periods.map(p => { const t = hta[p]?.total || 0; return t ? +((hta[p].alertas / t) * 100).toFixed(1) : 0; }), backgroundColor:"#b91c1c" }, { label:"% alertas DB", data: periods.map(p => { const t = db[p]?.total || 0; return t ? +((db[p].alertas / t) * 100).toFixed(1) : 0; }), backgroundColor:"#ea580c" } ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true, ticks:{ callback:v => v + "%" } } } } });
+
+  const tbody = document.getElementById("res-tbody");
+  tbody.innerHTML = periods.length ? periods.map(p => {
+    const h = hta[p] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+    const d = db[p] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+    const pctH = h.total ? Math.round((h.alertas / h.total) * 100) : 0;
+    const pctD = d.total ? Math.round((d.alertas / d.total) * 100) : 0;
+    const edC = h.edadCnt + d.edadCnt, edP = edC ? Math.round((h.edadSum + d.edadSum) / edC) : "—";
+    const imC = h.imcCnt + d.imcCnt, imP = imC ? +(((h.imcSum + d.imcSum) / imC).toFixed(1)) : "—";
+    return `<tr><td><strong>${periodLabel(p)}</strong></td><td>${h.total}</td><td class="alert-cell">${h.alertas}</td><td>${pctH}%</td><td>${d.total}</td><td class="alert-cell">${d.alertas}</td><td>${pctD}%</td><td>${edP}</td><td>${imP}</td></tr>`;
+  }).join("") : '<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Sin datos para mostrar</td></tr>';
+
+  const yc = document.getElementById("year-compare-card"), mc = document.getElementById("main-summary-card");
+  if (currentPeriod === "comparar") {
+    yc.style.display = "block"; mc.style.display = "none";
+    let prev = null;
+    const ybody = document.getElementById("year-compare-tbody");
+    ybody.innerHTML = periods.map(y => {
+      const h = hta[y] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const d = db[y] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const tot = h.total + d.total, al = h.alertas + d.alertas;
+      const pct = tot ? Math.round((al / tot) * 100) : 0;
+      const edC = h.edadCnt + d.edadCnt, edP = edC ? Math.round((h.edadSum + d.edadSum) / edC) : "—";
+      const imC = h.imcCnt + d.imcCnt, imP = imC ? +(((h.imcSum + d.imcSum) / imC).toFixed(1)) : "—";
+      let delta = '<span style="color:#999">—</span>';
+      if (prev !== null) { const diff = tot - prev; delta = `<span class="${diff >= 0 ? "delta-pos" : "delta-neg"}">${diff >= 0 ? "+" : ""}${diff}</span>`; }
+      prev = tot;
+      return `<tr><td><strong>${y}</strong></td><td>${tot}</td><td class="alert-cell">${al}</td><td>${pct}%</td><td>${delta}</td><td>${edP}</td><td>${imP}</td></tr>`;
+    }).join("") || '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px">Sin datos</td></tr>';
+  } else { yc.style.display = "none"; mc.style.display = "block"; }
+}
+
+/* ---------- EXPORTACIÓN CSV ---------- */
+function escapeCSV(v) { if (v == null) return ""; const s = String(v); return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function downloadCSV(rows, filename) {
+  const csv = rows.map(r => r.map(escapeCSV).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function exportSummaryCSV() {
+  const sel = document.getElementById("year-filter");
+  const yearFilter = currentPeriod === "comparar" ? "" : (sel ? sel.value : "");
+  const { hta, db, periods } = aggregate(currentPeriod, yearFilter);
+  if (!periods.length) { alert("No hay datos para exportar."); return; }
+  const rows = [], today = new Date().toISOString().slice(0, 10);
+  if (currentPeriod === "comparar") {
+    rows.push(["Año", "Total registros", "Alertas", "% Alertas", "Δ vs año anterior", "Edad prom.", "IMC prom."]);
+    let prev = null;
+    periods.forEach(y => {
+      const h = hta[y] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const d = db[y] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const tot = h.total + d.total, al = h.alertas + d.alertas;
+      const pct = tot ? Math.round((al / tot) * 100) : 0;
+      const edC = h.edadCnt + d.edadCnt, edP = edC ? Math.round((h.edadSum + d.edadSum) / edC) : "";
+      const imC = h.imcCnt + d.imcCnt, imP = imC ? +(((h.imcSum + d.imcSum) / imC).toFixed(1)) : "";
+      let delta = "";
+      if (prev !== null) { const diff = tot - prev; delta = (diff >= 0 ? "+" : "") + diff; }
+      prev = tot;
+      rows.push([y, tot, al, pct + "%", delta, edP, imP]);
+    });
+    downloadCSV(rows, `Resumen_Comparacion_Anual_${today}.csv`);
+  } else {
+    rows.push(["Período", "HTA", "Alertas HTA", "% alert HTA", "Diabetes", "Alertas DB", "% alert DB", "Edad prom.", "IMC prom."]);
+    periods.forEach(p => {
+      const h = hta[p] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const d = db[p] || { total:0, alertas:0, imcSum:0, imcCnt:0, edadSum:0, edadCnt:0 };
+      const pctH = h.total ? Math.round((h.alertas / h.total) * 100) : 0;
+      const pctD = d.total ? Math.round((d.alertas / d.total) * 100) : 0;
+      const edC = h.edadCnt + d.edadCnt, edP = edC ? Math.round((h.edadSum + d.edadSum) / edC) : "";
+      const imC = h.imcCnt + d.imcCnt, imP = imC ? +(((h.imcSum + d.imcSum) / imC).toFixed(1)) : "";
+      rows.push([periodLabel(p), h.total, h.alertas, pctH + "%", d.total, d.alertas, pctD + "%", edP, imP]);
+    });
+    const periodName = { mes:"Mensual", trimestre:"Trimestral", semestre:"Semestral", anual:"Anual" }[currentPeriod] || currentPeriod;
+    downloadCSV(rows, `Resumen_${periodName}${yearFilter ? "_" + yearFilter : "_Todos"}_${today}.csv`);
+  }
+}
+function exportRawCSV() {
+  const sel = document.getElementById("year-filter"), yf = sel ? sel.value : "";
+  const matchYear = fecha => { if (!yf) return true; const d = new Date(fecha); return !isNaN(d.getTime()) && d.getFullYear() === +yf; };
+  const hf = htaRecords.filter(r => matchYear(r.fecha)), df = dbRecords.filter(r => matchYear(r.fecha));
+  if (!hf.length && !df.length) { alert("No hay registros para exportar."); return; }
+  const rows = [], today = new Date().toISOString().slice(0, 10);
+  rows.push(["=== REGISTROS HIPERTENSIÓN ==="]);
+  rows.push(["ID", "Fecha", "Nombre", "Edad", "Sexo", "Peso (kg)", "Talla (m)", "IMC", "Clasif. IMC", "Sistólica", "Diastólica", "Clasificación PA", "Alerta", "Teléfono", "Notas"]);
+  hf.forEach(r => rows.push([r.id || "", fmtFecha(r.fecha), r.nombre, r.edad, r.sexo, r.peso, r.talla, r.imc, r.imc_clasificacion || "", r.sistolica, r.diastolica, r.clasificacion, r.alerta, r.telefono || "", r.notas || ""]));
+  rows.push([]);
+  rows.push(["=== REGISTROS DIABETES ==="]);
+  rows.push(["ID", "Fecha", "Nombre", "Edad", "Sexo", "Peso (kg)", "Talla (m)", "IMC", "Clasif. IMC", "Cintura (cm)", "Puntaje FINDRISC", "Riesgo", "Alerta", "Teléfono"]);
+  df.forEach(r => rows.push([r.id || "", fmtFecha(r.fecha), r.nombre, r.edad, r.sexo, r.peso, r.talla, r.imc, r.imc_clasificacion || "", r.cintura, r.puntaje, r.riesgo, r.alerta, r.telefono || ""]));
+  downloadCSV(rows, `Registros_Completos${yf ? "_" + yf : "_Todos"}_${today}.csv`);
+}
+
+/* ---------- INIT ---------- */
+(function init() {
+  const badge = document.getElementById("sync-badge");
+  if (CONFIG.WEB_APP_URL) { badge.textContent = "Conectado al Sheet"; badge.classList.remove("local"); refreshFromSheet(); }
+  else badge.textContent = "Modo local (sin conectar)";
+  updateFechaPreview(); updateLiveClock(); populateYearFilter(); updateYearInfo(); render();
+})();
 </script>
 </body>
 </html>
